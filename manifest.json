@@ -1,0 +1,32 @@
+{
+  "name": "Figure Sketching Youtube Helper",
+  "description": "Automatically pause and play youtube videos for figure sketching practice.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/youtube_figure_sketch_icon_round_16px.png",
+      "32": "/images/youtube_figure_sketch_icon_round_32px.png",
+      "48": "/images/youtube_figure_sketch_icon_round_48px.png",
+      "128": "/images/youtube_figure_sketch_icon_round_128px.png"
+    }
+  },
+  "icons": {
+    "16": "/images/youtube_figure_sketch_icon_round_16px.png",
+    "32": "/images/youtube_figure_sketch_icon_round_32px.png",
+    "48": "/images/youtube_figure_sketch_icon_round_48px.png",
+    "128": "/images/youtube_figure_sketch_icon_round_128px.png"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+      {
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["myscript.js"]
+      }
+  ]
+}

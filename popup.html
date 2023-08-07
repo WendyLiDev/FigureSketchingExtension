@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="button.css">
+    <link rel="stylesheet" href="popup.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <h1 id="header">Figure Sketch Helper</h1>
+    <button id="changeColor"></button>
+
+    <div id="timer"></div>
+
+    <div id="UI">
+        <p>Find any video you want to do figure sketches of, set your preferences, and hit the start button to begin</p>
+        <div id="selectRows">
+            <div class="selectRow">
+                <label for="sketchTime">Sketch length </label>
+                <select id="sketchTime" name="sketch time" >
+                    <option value="3" selected>3s</option>
+                    <option value="30">30s</option>
+                    <option value="60">1m</option>
+                    <option value="120">2m</option>
+                    <option value="300">5m</option>
+                    <option value="600">10m</option>
+                    <option value="900">15m</option>
+                    <option value="1800">30m</option>
+                    <option value="3600">1h</option>
+                    <option value="7200">2h</option>
+                    <option value="indefinite">indefinite</option>
+                </select>
+            </div>
+
+            <div class="selectRow">
+                <label for="skipTime">Skip # seconds </label>
+                <select id="skipTime" name="video skip time">
+                    <option value="1">1s</option>
+                    <option value="2" selected>2s</option>
+                    <option value="3">3s</option>
+                    <option value="4">4s</option>
+                    <option value="5">5s</option>
+                    <option value="10">10s</option>
+                    <option value="15">15s</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="controls"></div>
+
+        <button id="startButton" aria-label="Start button">START</button>
+        <button id="backButton" hidden={true} aria-label="Back button">&lt;</button>
+        <button id="pauseButton" hidden={true} aria-label="Pause button">||</button>
+        <button id="nextButton" hidden={true} aria-label="Next button">&gt;</button>
+        <button id="endButton" hidden={true} aria-label="End button">END</button>
+    </div>
+
+    <button id="minimizeButton" ariaLabel ="Minimize window button">Minimize</button>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
