@@ -1,5 +1,7 @@
 // popup.js
 
+import { getTime } from './scripts/helpers.js'
+
 let start = false;
 let pause = false;
 
@@ -35,7 +37,6 @@ chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
  * Initializing and handling event changes for the sketch length select element
  *  */
 
-// Initialize select with user's preferred sketch length
 const sketchLengthSelectElement = document.getElementById("sketchTime");
 sketchLengthSelectElement.addEventListener("change", handleSketchLengthSelectChange)
 
@@ -54,7 +55,6 @@ function handleSketchLengthSelectChange(event) {
  * Initializing and handling event changes for the skip seconds select element
  * */
 
-// Initialize select with user's preferred number of seconds to skip
 const skipSecondsSelectElement = document.getElementById("skipTime");
 skipSecondsSelectElement.addEventListener("change", handleSkipTimeSelectChange)
 
@@ -73,7 +73,6 @@ function handleSkipTimeSelectChange(event) {
  */
 
 
-
 /**
  * ========== TIMER ==========
  */
@@ -84,39 +83,6 @@ function updateTimerContent(){
         }
     });
     setTimeout(updateTimerContent, 100);
-}
-
-// {string} HELPER Format string as 00:00 or 00:00:00
-function getTimerString (seconds, minutes, hours){
-    let timerString = '';
-    if (hours != 0){
-        if (hours < 10){
-            timerString += '0';
-        }
-        timerString += String(hours) + ':';
-    }
-    if(minutes < 10 ){
-        timerString += '0';
-    }
-    timerString += String(minutes) + ':';
-    if (seconds < 10) {
-        timerString += '0';
-    }
-    timerString += String(seconds);
-    return timerString;
-}
-
-// {string} HELPER Takes time given in seconds and returns formatted string
-function getTime(seconds) {
-    if(sketchLengthSelectElement.value == 'indefinite'){
-        return '';
-    }
-
-    const sec = Number(seconds) % 60;
-    const min = Math.floor(seconds / 60) % 60;
-    const hrs = Math.floor(Math.floor(seconds / 60) / 60);
-
-    return getTimerString(sec, min, hrs);
 }
 
 /**
@@ -231,36 +197,3 @@ function handleMinimizeButtonClick() {
 }
 
 minimizeButton.addEventListener("click", handleMinimizeButtonClick);
-
-
-
-
-
-
-
-/** ***** Demo button code to be removed: ***** */
-// Initialize button with user's preferred color
-let changeColor = document.getElementById("changeColor");
-changeColor.hidden = true;
-
-chrome.storage.sync.get("color", ({ color }) => {
-  changeColor.style.backgroundColor = color;
-});
-
-// When the button is clicked, inject setPageBackgroundColor into current page
-changeColor.addEventListener("click", async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: setPageBackgroundColor,
-    });
-  });
-  
-  // The body of this function will be executed as a content script inside the
-  // current page
-  function setPageBackgroundColor() {
-    chrome.storage.sync.get("color", ({ color }) => {
-      document.body.style.backgroundColor = color;
-    });
-}

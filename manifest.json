@@ -21,12 +21,5 @@
     "32": "/images/youtube_figure_sketch_icon_round_32px.png",
     "48": "/images/youtube_figure_sketch_icon_round_48px.png",
     "128": "/images/youtube_figure_sketch_icon_round_128px.png"
-  },
-  "options_page": "options.html",
-  "content_scripts": [
-      {
-        "matches": ["http://*/*", "https://*/*"],
-        "js": ["myscript.js"]
-      }
-  ]
+  }
 }

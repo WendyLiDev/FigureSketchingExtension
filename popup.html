@@ -9,7 +9,6 @@
   </head>
   <body>
     <h1 id="header">Figure Sketch Helper</h1>
-    <button id="changeColor"></button>
 
     <div id="timer"></div>
 
@@ -19,8 +18,9 @@
             <div class="selectRow">
                 <label for="sketchTime">Sketch length </label>
                 <select id="sketchTime" name="sketch time" >
-                    <option value="3" selected>3s</option>
-                    <option value="30">30s</option>
+                    <!-- For testing only -->
+                    <!-- <option value="3">3s</option>  -->
+                    <option value="30" selected>30s</option>
                     <option value="60">1m</option>
                     <option value="120">2m</option>
                     <option value="300">5m</option>
@@ -58,6 +58,7 @@
 
     <button id="minimizeButton" ariaLabel ="Minimize window button">Minimize</button>
 
-    <script src="popup.js"></script>
+    <script type="module" src="scripts/helpers.js"></script>
+    <script type="module" src="popup.js"></script>
   </body>
 </html>

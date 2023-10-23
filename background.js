@@ -29,12 +29,21 @@ function resetTimer() {
   });
 }
 
+async function start() {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['scripts/startScript.js'],
+  });
+}
+
 async function nextFrame() {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    files: ['nextScript.js'],
+    files: ['scripts/nextScript.js'],
   });
 }
 
@@ -43,12 +52,13 @@ async function previousFrame() {
   
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    files: ['backScript.js'],
+    files: ['scripts/backScript.js'],
   });
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.cmd === 'TRIGGER_START_TIMER') {
+    start();
     backgroundTimerStarted = true;
     var countdownTime = setInterval(() => {
       if (triggerEndBackgroundTimer){
@@ -59,7 +69,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       else if (!backgroundTimerPaused && countdown > 0){
         countdown = countdown - 1;
-        console.log("Time: ", countdown);
       }
       else if (countdown === 0) {
         resetTimer();
@@ -87,22 +96,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ hasTimerStarted: backgroundTimerStarted });
   } else if (request.cmd === 'GET_IF_TIME_PAUSED') { 
     sendResponse({ hasTimerPaused: backgroundTimerPaused });
-  }
+  } 
 });
 
 /** TODO:
  * Add sleep and wake calls to prevent background script from being run constantly
  */
-
-
-
-
-/** TO BE REMOVED */
-let color = '#3aa757';
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ color });
-
-  console.log('Default background color set to %cgreen', `color: ${color}`);
-});
-/** */
