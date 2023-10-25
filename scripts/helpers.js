@@ -26,14 +26,18 @@ function getTimerString (seconds, minutes, hours){
 
 // {string} Takes the time in seconds and returns a formatted string
 export function getTime(seconds) {
-    const sketchLengthSelectElement = document.getElementById("sketchTime");
-    if(sketchLengthSelectElement.value == 'indefinite'){
-        return '';
+    if(document.getElementById("sketchTime")){
+            const sketchLengthSelectElement = document.getElementById("sketchTime");
+            if(sketchLengthSelectElement.value == 'indefinite'){
+                return '';
+            }
+
+        const sec = Number(seconds) % 60;
+        const min = Math.floor(seconds / 60) % 60;
+        const hrs = Math.floor(Math.floor(seconds / 60) / 60);
+
+        return getTimerString(sec, min, hrs);
     }
 
-    const sec = Number(seconds) % 60;
-    const min = Math.floor(seconds / 60) % 60;
-    const hrs = Math.floor(Math.floor(seconds / 60) / 60);
-
-    return getTimerString(sec, min, hrs);
+    return '';
 }
