@@ -12,9 +12,6 @@ timeDisplay.innerHTML = `
     <h1>00:00:00</h1>
 `;
 timeDisplay.style.position = 'relative';
-// timeDisplay.style.top = '20px';
-// timeDisplay.style.left = '20px';
-
 
 const sketchTimeSelect = document.createElement('div');
 sketchTimeSelect.id = "figure-drawing-extension-sketch-time-select"
