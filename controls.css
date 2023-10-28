@@ -8,17 +8,23 @@
     src: url('chrome-extension://__MSG_@@extension_id__/fonts/Pixeled.ttf');
 }
 
+:root {
+    --background-color: #d9d9d9;
+    --text-color:#2a2a2a;
+    --button-hover-color: #2B2E3F;
+}
+
 #figure-drawing-extension-controls {
-    background-color: #ffffff;
+    background-color: var(--background-color);
     margin: 30px 20px 30px 20px;
-    width: 700px;
-    height: 200px;
-    color: #463f3a;
+    padding: 22px 26px 22px 26px;
+    width: 615px;
+    height: 209px;
+    color: var(--text-color);
     font-family: 'Montserrat', sans-serif;
     cursor: 'pointer';
     z-index: '9999';
-    border: #242a2a;
-    border-style: solid;
+    border: 3px solid var(--text-color);
     border-radius: 16px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -31,20 +37,29 @@
 }
 
 /* LHS Controls - Time display */
-#figure-drawing-extension-time-display {
+#figure-drawing-extension-lhs-controls {
     grid-column: 1 / 3;
-    border: 1px solid #3108ff;
+    /* border: 1px solid #08ff8c; */
 }
 
 #figure-drawing-extension-time-display h1 {
     font-family: sevenSegment;
     font-size: 96px;
+    border: 2px solid var(--text-color);
+    border-radius: 10px;
+    padding: 0px 10px 0px 10px;
+    width: fit-content;
 }
 
 /* RHS Controls */
-#figure-drawing-extension-selection-controls {
+#figure-drawing-extension-rhs-controls {
     grid-column: 3;
-    border: 1px solid #08ff8c;
+    /* border: 1px solid #08ff8c; */
+    text-align: center;;
+}
+
+#figure-drawing-extension-selection-controls{
+    margin-bottom: 10px;
 }
 
 #figure-drawing-extension-selection-controls h1 {
@@ -54,17 +69,64 @@
 
 .figure-drawing-extension-select {
     display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .figure-drawing-extension-selection-level-bar {
-    width: 160px;
-    height: 20px;
-    background-color: #F2312F;
+    width: 127px;
+    height: 18px;
     display: inline-block;
-    border: 3px solid #000;
+    border: 3px solid var(--text-color);
 }
 
 .figure-drawing-extension-select-button {
     display: inline-block;
+    width: 19px;
+    height: 18px;
+    color: var(--background-color);
+    background-color: var(--text-color);
 }
 
+.figure-drawing-extension-main-button {
+    width: 100%;
+    background-color: var(--text-color);
+    border: none;
+    color: var(--background-color);
+    border-radius: 7px;
+    text-transform: uppercase;
+    font-family: pixeled;
+    font-size:13px;
+    padding: 8px 0px 13px 0px;
+}
+
+.figure-drawing-extension-main-button:hover {
+    background-color: var(--button-hover-color);
+    -webkit-animation: btnWiggle 5s infinite;
+    -moz-animation: btnWiggle 5s infinite;
+    -o-animation: btnWiggle 5s infinite;
+    animation: btnWiggle 5s infinite;
+}
+
+/* animation */
+@-webkit-keyframes btnWiggle {
+	0% {-webkit-transform: rotate(0deg);}
+	2% {-webkit-transform: rotate(-1deg);}
+	3.5% {-webkit-transform: rotate(1deg);}
+	5% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(0deg);}
+}
+@-o-keyframes btnWiggle {
+	0% {-webkit-transform: rotate(0deg);}
+	2% {-webkit-transform: rotate(-1deg);}
+	3.5% {-webkit-transform: rotate(1deg);}
+	5% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(0deg);}
+}
+@keyframes btnWiggle {
+	0% {-webkit-transform: rotate(0deg);}
+	2% {-webkit-transform: rotate(-1deg);}
+	3.5% {-webkit-transform: rotate(1deg);}
+	5% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(0deg);}
+}
