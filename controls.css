@@ -140,23 +140,41 @@
 	100% {-webkit-transform: rotate(0deg);}
 }
 
+@keyframes btnThrob {
+    0% {-webkit-transform: scale(100%);}
+	2% {-webkit-transform: scale(110%);}
+	3.5% {-webkit-transform: scale(120%);}
+	10% {-webkit-transform: scale(127%);}
+	/* 100% {-webkit-transform: scale(120%);} */
+}
+
 #figure-drawing-extension-theme-button {
     border: none;
+    outline: none;
     background-color: transparent;
     width: fit-content;
     height: fit-content;
     position: absolute;
     left: 13px;
     bottom: 16px;
+    transition: all .1s ease-in-out;
 }
 
 #figure-drawing-extension-theme-button:hover {
-
+    transform: scale(1.1);
 }
 
 #figure-drawing-extension-theme-button-icon {
     max-width: 22px;
     max-height: 22px;
+    image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+    image-rendering: -moz-crisp-edges;          /* Firefox                        */
+    image-rendering: -o-crisp-edges;            /* Opera                          */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+    image-rendering: pixelated;                 /* Universal support since 2021   */
+    image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+    -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
+
 }
 
 #figure-drawing-extension-close-button {
