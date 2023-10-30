@@ -31,7 +31,7 @@
   ],
   "web_accessible_resources":[
     {
-      "resources": [ "fonts/*"],
+      "resources": [ "fonts/*", "images/*"],
       "matches": ["http://*/*", "https://*/*"]
     }
   ]

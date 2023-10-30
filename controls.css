@@ -86,6 +86,15 @@
     height: 18px;
     color: var(--background-color);
     background-color: var(--text-color);
+    border: none;
+}
+
+.figure-drawing-extension-select-button:hover {
+    background-color: var(--button-hover-color);
+    -webkit-animation: btnWiggle 5s infinite;
+    -moz-animation: btnWiggle 5s infinite;
+    -o-animation: btnWiggle 5s infinite;
+    animation: btnWiggle 5s infinite;
 }
 
 .figure-drawing-extension-main-button {
@@ -129,4 +138,30 @@
 	3.5% {-webkit-transform: rotate(1deg);}
 	5% {-webkit-transform: rotate(0deg);}
 	100% {-webkit-transform: rotate(0deg);}
+}
+
+#figure-drawing-extension-theme-button {
+    border: none;
+    background-color: transparent;
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    left: 13px;
+    bottom: 16px;
+}
+
+#figure-drawing-extension-theme-button:hover {
+
+}
+
+#figure-drawing-extension-theme-button-icon {
+    max-width: 22px;
+    max-height: 22px;
+}
+
+#figure-drawing-extension-close-button {
+    max-width: 22px;
+    max-height: 22px;
+    border: none;
+    background-color: transparent;
 }

@@ -67,6 +67,35 @@ timeDisplay.innerHTML = `
 timeDisplay.style.position = 'relative';
 lhsControls.appendChild(timeDisplay);
 
+const themeButton = document.createElement('button');
+themeButton.id = "figure-drawing-extension-theme-button";
+themeButton.innerHTML = `
+    <img id="figure-drawing-extension-theme-button-icon" alt="An icon for a button that changes the theme for the figure drawing extension">
+`;
+lhsControls.appendChild(themeButton);
+let img = document.getElementById('figure-drawing-extension-theme-button-icon');
+img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
+
+// TODO: Store this as a preference
+// A boolean that holds true for light mode and false for dark mode
+var currentTheme = true;
+themeButton.addEventListener('mousedown', () => {
+    const root = document.querySelector(':root');
+    if (currentTheme) {
+        root.style.setProperty('--background-color', '#2a2a2a');
+        root.style.setProperty('--text-color', '#d9d9d9');
+        root.style.setProperty('--button-hover-color', '#B8B9D5');
+        img.src = chrome.runtime.getURL("./images/theme_icon-light.png");
+        currentTheme = false;
+    } else {
+        root.style.setProperty('--background-color', '#d9d9d9');
+        root.style.setProperty('--text-color', '#2a2a2a');
+        root.style.setProperty('--button-hover-color', '#2B2E3F');
+        img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
+        currentTheme = true;
+    }
+})
+
 /* === RHS - Selection controls === */
 const rhsControls = document.createElement('div');
 rhsControls.id = "figure-drawing-extension-rhs-controls";
@@ -79,4 +108,3 @@ createSelectionControl('sketch-time', 'sketch time');
 createSelectionControl('frame-interval', 'frame interval');
 
 createMainButton("start", "start");
-
