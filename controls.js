@@ -1,3 +1,5 @@
+var started = false;
+
 function createSelectionControl(id, title) {
     const selectControl = document.createElement('div');
     selectControl.id = "figure-drawing-extension-select-control-" + id;
@@ -18,6 +20,24 @@ function createMainButton(id, title) {
     button.id = "figure-drawing-extension-main-button-" + id;
     button.className = "figure-drawing-extension-main-button";
     button.textContent = title;
+    button.addEventListener('mousedown', (e) => {
+        const frameIntervalPreview = document.getElementById('figure-drawing-extension-frame-interval-preview');
+        const themeButton = document.getElementById('figure-drawing-extension-theme-button');
+        const progressBar = document.getElementById('figure-drawing-extension-progress-bar');
+        if(!started) {
+            button.textContent = "end";
+            frameIntervalPreview.hidden = true;
+            themeButton.hidden = true;
+            progressBar.hidden = false;
+            started = true;
+        } else {
+            button.textContent = "start";
+            frameIntervalPreview.hidden = false;
+            themeButton.hidden = false;
+            progressBar.hidden = true;
+            started = false;
+        }
+    });
 
     rhsControls.appendChild(button);
 }
@@ -67,6 +87,16 @@ timeDisplay.innerHTML = `
 timeDisplay.style.position = 'relative';
 lhsControls.appendChild(timeDisplay);
 
+const frameIntervalPreview = document.createElement('div');
+frameIntervalPreview.id = "figure-drawing-extension-frame-interval-preview";
+frameIntervalPreview.textContent = "3 seconds";
+lhsControls.appendChild(frameIntervalPreview);
+
+const progressBar = document.createElement('div');
+progressBar.id = 'figure-drawing-extension-progress-bar';
+progressBar.hidden = true;
+lhsControls.appendChild(progressBar);
+
 const themeButton = document.createElement('button');
 themeButton.id = "figure-drawing-extension-theme-button";
 themeButton.innerHTML = `
@@ -85,12 +115,14 @@ themeButton.addEventListener('mousedown', () => {
         root.style.setProperty('--background-color', '#2a2a2a');
         root.style.setProperty('--text-color', '#d9d9d9');
         root.style.setProperty('--button-hover-color', '#B8B9D5');
-        img.src = chrome.runtime.getURL("./images/theme_icon-light.png");
+        root.style.setProperty('--accent-color', '#55566D');
+        img.src = chrome.runtime.getURL("./images/theme_icon-light.png"); 
         currentTheme = false;
     } else {
         root.style.setProperty('--background-color', '#d9d9d9');
         root.style.setProperty('--text-color', '#2a2a2a');
-        root.style.setProperty('--button-hover-color', '#2B2E3F');
+        root.style.setProperty('--button-hover-color', '#353c5f');
+        root.style.setProperty('--accent-color', '#889595');
         img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
         currentTheme = true;
     }

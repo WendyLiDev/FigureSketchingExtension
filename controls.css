@@ -11,7 +11,8 @@
 :root {
     --background-color: #d9d9d9;
     --text-color:#2a2a2a;
-    --button-hover-color: #2B2E3F;
+    --button-hover-color: #353c5f;
+    --accent-color: #889595;
 }
 
 #figure-drawing-extension-controls {
@@ -42,13 +43,18 @@
     /* border: 1px solid #08ff8c; */
 }
 
+#figure-drawing-extension-time-display {
+    border: 2px solid var(--text-color);
+    border-radius: 10px;
+    box-shadow: 0px 5px 0px var(--accent-color);
+    width: 100%;
+    height: fit-content;
+}
+
 #figure-drawing-extension-time-display h1 {
     font-family: sevenSegment;
     font-size: 96px;
-    border: 2px solid var(--text-color);
-    border-radius: 10px;
-    padding: 0px 10px 0px 10px;
-    width: fit-content;
+    text-align: center;
 }
 
 /* RHS Controls */
@@ -81,27 +87,26 @@
 }
 
 .figure-drawing-extension-select-button {
+    border: none;
+    outline: none;
     display: inline-block;
     width: 19px;
     height: 18px;
     color: var(--background-color);
     background-color: var(--text-color);
-    border: none;
 }
 
 .figure-drawing-extension-select-button:hover {
     background-color: var(--button-hover-color);
-    -webkit-animation: btnWiggle 5s infinite;
-    -moz-animation: btnWiggle 5s infinite;
-    -o-animation: btnWiggle 5s infinite;
-    animation: btnWiggle 5s infinite;
 }
 
 .figure-drawing-extension-main-button {
-    width: 100%;
-    background-color: var(--text-color);
     border: none;
+    outline: none;
+    box-shadow: 0px 5px 0px var(--accent-color);
+    background-color: var(--text-color);
     color: var(--background-color);
+    width: 100%;
     border-radius: 7px;
     text-transform: uppercase;
     font-family: pixeled;
@@ -111,10 +116,10 @@
 
 .figure-drawing-extension-main-button:hover {
     background-color: var(--button-hover-color);
-    -webkit-animation: btnWiggle 5s infinite;
-    -moz-animation: btnWiggle 5s infinite;
-    -o-animation: btnWiggle 5s infinite;
-    animation: btnWiggle 5s infinite;
+    -webkit-animation: btnWiggle 5s none;
+    -moz-animation: btnWiggle 5s none;
+    -o-animation: btnWiggle 5s none;
+    animation: btnWiggle 5s none;
 }
 
 /* animation */
@@ -140,12 +145,12 @@
 	100% {-webkit-transform: rotate(0deg);}
 }
 
-@keyframes btnThrob {
-    0% {-webkit-transform: scale(100%);}
-	2% {-webkit-transform: scale(110%);}
-	3.5% {-webkit-transform: scale(120%);}
-	10% {-webkit-transform: scale(127%);}
-	/* 100% {-webkit-transform: scale(120%);} */
+#figure-drawing-extension-progress-bar {
+    margin-top: 10px;
+    border: 2px solid var(--text-color);
+    width: 100%;
+    height: 27px;
+    border-radius: 6px;
 }
 
 #figure-drawing-extension-theme-button {
@@ -178,8 +183,18 @@
 }
 
 #figure-drawing-extension-close-button {
+    border: none;
+    outline: none;
+    background-color: transparent;
     max-width: 22px;
     max-height: 22px;
-    border: none;
-    background-color: transparent;
+}
+
+#figure-drawing-extension-frame-interval-preview {
+    font-family: pixeled;
+    border: 2px solid var(--text-color);
+    width: fit-content;
+    margin: 0 auto;
+    margin-top: 10px;
+    padding: 8px;
 }
