@@ -95,6 +95,14 @@ rhsControls.appendChild(selectionControls);
 createSelectionControl('sketch-time', 'sketch time');
 createSelectionControl('frame-interval', 'frame interval');
 
+// Go forward, Pause, and Go back buttons
+const controlButtons = Div('control-buttons');
+controlButtons.style.display = "none";
+rhsControls.appendChild(controlButtons);
+createControlButton('go-back', "<<");
+createControlButton('pause', "||");
+createControlButton('go-forward', ">>");
+
 // Main Start & End button
 createMainButton("start", "start");
 
@@ -121,22 +129,38 @@ function createMainButton(id, title) {
         const frameIntervalPreview = GetElementById('frame-interval-preview');
         const themeButton = GetElementById('theme-button');
         const progressBar = GetElementById('progress-bar');
+        const selectionControls = GetElementById('selection-controls');
+        const controlButtons = GetElementById('control-buttons');
         if(!started) {
             button.textContent = "end";
             frameIntervalPreview.hidden = true;
             themeButton.hidden = true;
+            selectionControls.style.display = "none";
+            controlButtons.style.display = "block";
             progressBar.hidden = false;
             started = true;
         } else {
             button.textContent = "start";
             frameIntervalPreview.hidden = false;
             themeButton.hidden = false;
+            selectionControls.style.display = "block";
+            controlButtons.style.display = "none";
             progressBar.hidden = true;
             started = false;
         }
     });
 
     rhsControls.appendChild(button);
+}
+
+function createControlButton(id, textContent) {
+    const button = Button('control-button-' + id);
+    button.className = "figure-drawing-extension-control-button";
+    button.textContent = textContent;
+    button.addEventListener('mousedown', (e) => {
+        console.log("control button clicked!");
+    })
+    controlButtons.appendChild(button);
 }
 
 /* **************************************************************************  */

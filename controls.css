@@ -60,6 +60,7 @@
 /* RHS Controls */
 #figure-drawing-extension-rhs-controls {
     grid-column: 3;
+    margin: auto;
     /* border: 1px solid #08ff8c; */
     text-align: center;;
 }
@@ -97,6 +98,26 @@
 }
 
 .figure-drawing-extension-select-button:hover {
+    background-color: var(--fig-drawing-ext-button-hover-color);
+}
+
+#figure-drawing-extension-control-buttons {
+    display: inline-block;
+    margin-bottom: 19px;
+}
+
+.figure-drawing-extension-control-button {
+    border: none;
+    outline: none;
+    width: 43px;
+    height: 41px;
+    color: var(--fig-drawing-ext-background-color);
+    background-color: var(--fig-drawing-ext-text-color);
+    margin: 7px;
+    box-shadow: 0px 5px 0px var(--fig-drawing-ext-accent-color);
+}
+
+.figure-drawing-extension-control-button:hover {
     background-color: var(--fig-drawing-ext-button-hover-color);
 }
 
