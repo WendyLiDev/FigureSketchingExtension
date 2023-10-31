@@ -42,7 +42,7 @@ function createMainButton(id, title) {
     rhsControls.appendChild(button);
 }
 
-/* === Draggable element === */
+/* === Draggable element === */  
 const draggableDiv = document.createElement('div');
 draggableDiv.id = "figure-drawing-extension-controls";
 draggableDiv.style.position = 'fixed';
@@ -112,17 +112,17 @@ var currentTheme = true;
 themeButton.addEventListener('mousedown', () => {
     const root = document.querySelector(':root');
     if (currentTheme) {
-        root.style.setProperty('--background-color', '#2a2a2a');
-        root.style.setProperty('--text-color', '#d9d9d9');
-        root.style.setProperty('--button-hover-color', '#B8B9D5');
-        root.style.setProperty('--accent-color', '#55566D');
+        root.style.setProperty('--fig-drawing-ext-background-color', '#2a2a2a');
+        root.style.setProperty('--fig-drawing-ext-text-color', '#d9d9d9');
+        root.style.setProperty('--fig-drawing-ext-button-hover-color', '#B8B9D5');
+        root.style.setProperty('--fig-drawing-ext-accent-color', '#55566D');
         img.src = chrome.runtime.getURL("./images/theme_icon-light.png"); 
         currentTheme = false;
     } else {
-        root.style.setProperty('--background-color', '#d9d9d9');
-        root.style.setProperty('--text-color', '#2a2a2a');
-        root.style.setProperty('--button-hover-color', '#353c5f');
-        root.style.setProperty('--accent-color', '#889595');
+        root.style.setProperty('--fig-drawing-ext-background-color', '#d9d9d9');
+        root.style.setProperty('--fig-drawing-ext-text-color', '#2a2a2a');
+        root.style.setProperty('--fig-drawing-ext-button-hover-color', '#353c5f');
+        root.style.setProperty('--fig-drawing-ext-accent-color', '#889595');
         img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
         currentTheme = true;
     }
