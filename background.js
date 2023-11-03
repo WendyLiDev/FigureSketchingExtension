@@ -13,7 +13,8 @@ let triggerEndBackgroundTimer = false;
  */
 
 chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
-  countdown = sketchLength;
+  countdown = 3;
+  // countdown = sketchLength;
 });
 
 /**
@@ -25,7 +26,7 @@ chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
 
 function resetTimer() {
   chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
-    countdown = sketchLength;
+    countdown = 3;
   });
 }
 

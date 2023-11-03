@@ -1,6 +1,46 @@
 // controls.js
 
 var started = false;
+var paused = false;
+
+var sketchLengthSelected = 0;
+var sketchLengthOptions = [3, 30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+
+var frameIntervalSelected = 0;
+var frameIntervalOptions = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
+var frameIntervalOptionNames = [
+    "1 second",
+    "2 seconds",
+    "3 seconds",
+    "5 seconds",
+    "10 seconds",
+    "15 seconds",
+    "30 seconds",
+    "1 minute",
+    "2 minutes",
+    "3 minutes"
+];
+
+/**
+ * ==========================================================
+ * ========================= SETUP ==========================
+ * ==========================================================
+ */
+chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
+    if (response.time) {
+        GetElementById('time').innerHTML = getTime(response.time);
+    }
+});
+
+function updateTimerContent(){
+    chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
+        if (response.time) {
+            GetElementById('time').innerHTML = getTime(response.time);
+        }
+    });
+    setTimeout(updateTimerContent, 100);
+}
+
 
 /* **************************************************************************  */
 
@@ -40,14 +80,15 @@ const lhsControls = Div("lhs-controls");
 draggableDiv.appendChild(lhsControls);
 
 const timeDisplay = Div("time-display");
-timeDisplay.innerHTML = `
-    <h1>00:00:00</h1>
-`;
+const time = document.createElement("h1");
+time.id = "figure-drawing-extension-time";
+time.innerHTML = "00:00:00";
+timeDisplay.appendChild(time);
 timeDisplay.style.position = 'relative';
 lhsControls.appendChild(timeDisplay);
 
 const frameIntervalPreview = Div("frame-interval-preview");
-frameIntervalPreview.textContent = "3 seconds";
+frameIntervalPreview.textContent = frameIntervalOptionNames[frameIntervalSelected];
 lhsControls.appendChild(frameIntervalPreview);
 
 const progressBar = Div('progress-bar');
@@ -66,6 +107,7 @@ img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
 // A boolean that holds true for light mode and false for dark mode
 var currentTheme = true;
 themeButton.addEventListener('mousedown', () => {
+
     const root = document.querySelector(':root');
     if (currentTheme) {
         root.style.setProperty('--fig-drawing-ext-background-color', '#2a2a2a');
@@ -109,17 +151,21 @@ createMainButton("start", "start");
 /* **************************************************************************  */
 /* ***** Create Components *****  */
 function createSelectionControl(id, title) {
-    const selectControl = Div("figure-drawing-extension-select-control-" + id);
-    selectControl.innerHTML = `
-        <h1>${title}</h1>
-        <span class="figure-drawing-extension-select">
-            <button class='figure-drawing-extension-select-button'>-</button>
-            <div class='figure-drawing-extension-selection-level-bar'></div>
-            <button class='figure-drawing-extension-select-button'>+</button>
-        </span>
-    `;
-
+    const selectControl = Div("select-control-" + id);
     selectionControls.appendChild(selectControl);
+
+    const selectTitle = H1("select-title", title);
+    const select = document.createElement('span');
+    select.className = "figure-drawing-extension-select";
+    selectControl.appendChild(selectTitle);
+    selectControl.appendChild(select);
+    
+    const minusButton = Button(id + '-select-minus-button', '-', 'select-button');
+    const levelBar = Div(id + '-selection-level-bar', 'selection-level-bar');
+    const plusButton = Button(id + '-select-plus-button', '+', 'select-button');
+    select.appendChild(minusButton);
+    select.appendChild(levelBar);
+    select.appendChild(plusButton);
 }
 
 function createMainButton(id, title) {
@@ -139,6 +185,9 @@ function createMainButton(id, title) {
             controlButtons.style.display = "block";
             progressBar.hidden = false;
             started = true;
+            chrome.runtime.sendMessage({ cmd: 'TRIGGER_START_TIMER',
+                when: sketchLengthOptions[sketchLengthSelected] });
+            updateTimerContent();
         } else {
             button.textContent = "start";
             frameIntervalPreview.hidden = false;
@@ -147,6 +196,7 @@ function createMainButton(id, title) {
             controlButtons.style.display = "none";
             progressBar.hidden = true;
             started = false;
+            chrome.runtime.sendMessage({ cmd: 'TRIGGER_END_TIMER' });
         }
     });
 
@@ -157,27 +207,105 @@ function createControlButton(id, textContent) {
     const button = Button('control-button-' + id);
     button.className = "figure-drawing-extension-control-button";
     button.textContent = textContent;
-    button.addEventListener('mousedown', (e) => {
-        console.log("control button clicked!");
-    })
+    switch (id){
+        case "go-back":
+            button.addEventListener('mousedown', (e) => {
+                chrome.runtime.sendMessage({ cmd: 'TRIGGER_BACK' });
+            })
+        case "pause":
+            button.addEventListener('mousedown', (e) => {
+                chrome.runtime.sendMessage({ cmd: 'TRIGGER_PAUSE_TIMER' });
+            })
+        case "go-forward":
+            button.addEventListener('mousedown', (e) => {
+                chrome.runtime.sendMessage({ cmd: 'TRIGGER_NEXT' });
+            })
+    }
+
     controlButtons.appendChild(button);
 }
 
 /* **************************************************************************  */
+/* ========== TIMER ========== */
+function updateTimerContent(){
+    chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
+        if (response.time) {
+            GetElementById('time').innerHTML = getTime(response.time);
+        }
+    });
+    setTimeout(updateTimerContent, 100);
+}
+
+/* **************************************************************************  */
 /* ***** Helpers *****  */
-function Div(id) {
+function Div(id, className) {
     const div = document.createElement('div');
-    div.id = "figure-drawing-extension-" + id; 
+    if(id !== ''){
+        div.id = "figure-drawing-extension-" + id;
+    }
+    if(className !== '') {
+        div.className = "figure-drawing-extension-" + className;
+    }
     return div;
 }
 
-function Button(id, textContent) {
+function Button(id, textContent, className) {
     const button = document.createElement('button'); 
-    button.id = "figure-drawing-extension-" + id; 
+    if(id !== '') {
+        button.id = "figure-drawing-extension-" + id; 
+    }
+    if(className !== '') {
+        button.className = "figure-drawing-extension-" + className;
+    }
     button.textContent = textContent;
     return button;
 }
 
+function H1(id, textContent) {
+    const h1 = document.createElement('h1'); 
+    h1.id = "figure-drawing-extension-" + id; 
+    h1.textContent = textContent;
+    return h1;
+}
+
 function GetElementById(id) {
     return document.getElementById('figure-drawing-extension-' + id);
+}
+
+// {string} Format string as 00:00 or 00:00:00
+function getTimerString (seconds, minutes, hours){
+    let timerString = '';
+    if (hours != 0){
+        if (hours < 10){
+            timerString += '0';
+        }
+        timerString += String(hours) + ':';
+    }
+    if(minutes < 10 ){
+        timerString += '0';
+    }
+    timerString += String(minutes) + ':';
+    if (seconds < 10) {
+        timerString += '0';
+    }
+    timerString += String(seconds);
+    return timerString;
+}
+
+// {string} Takes the time in seconds and returns a formatted string
+function getTime(seconds) {
+    if(GetElementById("time")){
+        // when sketchLengthSelected is 9, the timer is set to infinite time 
+        if(sketchLengthSelected === 9){
+            return '';
+        }
+
+        const sec = Number(seconds) % 60;
+        const min = Math.floor(seconds / 60) % 60;
+        const hrs = Math.floor(Math.floor(seconds / 60) / 60);
+
+        return getTimerString(sec, min, hrs);
+    }
+
+    return '';
 }
