@@ -55,6 +55,7 @@ let isDragging = false;
 let offsetX, offsetY;
 
 draggableDiv.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) { return; }
     isDragging = true;
     offsetX = e.clientX - draggableDiv.getBoundingClientRect().left;
     offsetY = e.clientY - draggableDiv.getBoundingClientRect().top;
@@ -106,8 +107,8 @@ img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
 // TODO: Store this as a preference
 // A boolean that holds true for light mode and false for dark mode
 var currentTheme = true;
-themeButton.addEventListener('mousedown', () => {
-
+themeButton.addEventListener('mouseup', (e) => {
+    if (e.button !== 0) { return; }
     const root = document.querySelector(':root');
     if (currentTheme) {
         root.style.setProperty('--fig-drawing-ext-background-color', '#2a2a2a');
@@ -171,7 +172,8 @@ function createSelectionControl(id, title) {
 function createMainButton(id, title) {
     const button = Button("main-button-" + id, title);
     button.className = "figure-drawing-extension-main-button";
-    button.addEventListener('mousedown', (e) => {
+    button.addEventListener('mouseup', (e) => {
+        if (e.button !== 0) { return; }
         const frameIntervalPreview = GetElementById('frame-interval-preview');
         const themeButton = GetElementById('theme-button');
         const progressBar = GetElementById('progress-bar');
@@ -209,15 +211,18 @@ function createControlButton(id, textContent) {
     button.textContent = textContent;
     switch (id){
         case "go-back":
-            button.addEventListener('mousedown', (e) => {
+            button.addEventListener('mouseup', (e) => {
+                if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_BACK' });
             })
         case "pause":
-            button.addEventListener('mousedown', (e) => {
+            button.addEventListener('mouseup', (e) => {
+                if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_PAUSE_TIMER' });
             })
         case "go-forward":
-            button.addEventListener('mousedown', (e) => {
+            button.addEventListener('mouseup', (e) => {
+                if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_NEXT' });
             })
     }
