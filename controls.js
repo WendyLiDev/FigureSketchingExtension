@@ -163,10 +163,51 @@ function createSelectionControl(id, title) {
     
     const minusButton = Button(id + '-select-minus-button', '-', 'select-button');
     const levelBar = Div(id + '-selection-level-bar', 'selection-level-bar');
+    setUpLevelBar(id, levelBar);
+
     const plusButton = Button(id + '-select-plus-button', '+', 'select-button');
     select.appendChild(minusButton);
     select.appendChild(levelBar);
     select.appendChild(plusButton);
+
+    switch(id) {
+        case 'frame-interval':
+            minusButton.addEventListener("mouseup", (e) => {
+                if(frameIntervalSelected > 0) {
+                    frameIntervalSelected--;
+                    levelBar.removeChild(levelBar.lastChild);
+                }
+            });
+            plusButton.addEventListener("mouseup", (e) => {
+                if(frameIntervalSelected < 9) {
+                    frameIntervalSelected++;
+                    levelBar.appendChild(Div('', 'selection-level-bar-square'));
+                }
+            });
+        case 'sketch-time':
+            minusButton.addEventListener("mouseup", (e) => {
+                if(sketchLengthSelected > 0) {
+                    sketchLengthSelected--;
+                    levelBar.removeChild(levelBar.lastChild);
+                }
+            });
+            plusButton.addEventListener("mouseup", (e) => {
+                if(sketchLengthSelected < 9) {
+                    sketchLengthSelected++;
+                    levelBar.appendChild(Div('', 'selection-level-bar-square'));
+                }
+            });
+    }
+}
+
+function setUpLevelBar(id, levelBar) {
+    let lvl = ((id === 'frame-interval') ? frameIntervalSelected : sketchLengthSelected) + 1;
+    while (levelBar.hasChildNodes()) {
+        levelBar.removeChild(levelbar.lastChild);
+    }
+    for(let i = 0; i < lvl; ++i) {
+        levelBar.appendChild(Div('', 'selection-level-bar-square'));
+    }
 }
 
 function createMainButton(id, title) {

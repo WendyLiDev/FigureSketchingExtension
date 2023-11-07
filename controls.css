@@ -40,7 +40,7 @@
 /* LHS Controls - Time display */
 #figure-drawing-extension-lhs-controls {
     grid-column: 1 / 5;
-    border: 1px solid #08ff8c;
+    /* border: 1px solid #08ff8c; */
 }
 
 #figure-drawing-extension-time-display {
@@ -60,7 +60,7 @@
 /* RHS Controls */
 #figure-drawing-extension-rhs-controls {
     grid-column: 5 / 7;
-    border: 1px solid #08ff8c;
+    /* border: 1px solid #08ff8c; */
     text-align: center;;
 }
 
@@ -77,13 +77,23 @@
     display: inline-block;
     margin-top: 10px;
     margin-bottom: 10px;
+    vertical-align: auto;
 }
 
 .figure-drawing-extension-selection-level-bar {
     width: 127px;
     height: 18px;
     display: inline-block;
-    border: 3px solid var(--fig-drawing-ext-text-color);
+    border: 2px solid var(--fig-drawing-ext-text-color);
+}
+
+.figure-drawing-extension-selection-level-bar-square {
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-left: 2px;
+    margin-top: 2px;
+    background-color: var(--fig-drawing-ext-text-color);
 }
 
 .figure-drawing-extension-select-button {
@@ -94,6 +104,9 @@
     height: 18px;
     color: var(--fig-drawing-ext-background-color);
     background-color: var(--fig-drawing-ext-text-color);
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: top;
 }
 
 .figure-drawing-extension-select-button:hover {
