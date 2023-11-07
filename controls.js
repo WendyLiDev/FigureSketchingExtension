@@ -292,16 +292,21 @@ function createControlButton(id, textContent) {
                 if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_BACK' });
             })
+            break;
         case "pause":
             button.addEventListener('mouseup', (e) => {
                 if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_PAUSE_TIMER' });
+                paused = !paused;
+                updatePauseButton();
             })
+            break;
         case "go-forward":
             button.addEventListener('mouseup', (e) => {
                 if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_NEXT' });
             })
+            break;
     }
 
     controlButtons.appendChild(button);
@@ -310,12 +315,20 @@ function createControlButton(id, textContent) {
 /* **************************************************************************  */
 /* ========== TIMER ========== */
 function updateTimerContent(){
-    chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
-        if (response.time) {
-            GetElementById('time').innerHTML = getTime(response.time);
-        }
-    });
-    setTimeout(updateTimerContent, 100);
+    if(started){
+        chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
+            if (response.time) {
+                GetElementById('time').innerHTML = getTime(response.time);
+            }
+        });
+        setTimeout(updateTimerContent, 100);
+    }
+}
+
+/* ========== Pause Button ========== */
+function updatePauseButton(){
+    const pauseButton = GetElementById('control-button-pause');
+    pauseButton.textContent = paused ? '>' : '||';
 }
 
 /* **************************************************************************  */
