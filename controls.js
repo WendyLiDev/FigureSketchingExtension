@@ -4,7 +4,7 @@ var started = false;
 var paused = false;
 
 var sketchLengthSelected = 0;
-var sketchLengthOptions = [3, 30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+var sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
 
 var frameIntervalSelected = 0;
 var frameIntervalOptions = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
@@ -81,12 +81,10 @@ const lhsControls = Div("lhs-controls");
 draggableDiv.appendChild(lhsControls);
 
 const timeDisplay = Div("time-display");
-const time = document.createElement("h1");
-time.id = "figure-drawing-extension-time";
-time.innerHTML = "00:00:00";
-timeDisplay.appendChild(time);
-timeDisplay.style.position = 'relative';
 lhsControls.appendChild(timeDisplay);
+
+const time = H1("time", "00:00:00");
+timeDisplay.appendChild(time);
 
 const frameIntervalPreview = Div("frame-interval-preview");
 frameIntervalPreview.textContent = frameIntervalOptionNames[frameIntervalSelected];
@@ -164,40 +162,63 @@ function createSelectionControl(id, title) {
     const minusButton = Button(id + '-select-minus-button', '-', 'select-button');
     const levelBar = Div(id + '-selection-level-bar', 'selection-level-bar');
     setUpLevelBar(id, levelBar);
-
     const plusButton = Button(id + '-select-plus-button', '+', 'select-button');
     select.appendChild(minusButton);
     select.appendChild(levelBar);
     select.appendChild(plusButton);
+    minusButton.addEventListener("mousedown", (e) => {
+        e.stopPropagation();
+    })
+    plusButton.addEventListener("mousedown", (e) => {
+        e.stopPropagation();
+    })
 
     switch(id) {
-        case 'frame-interval':
-            minusButton.addEventListener("mouseup", (e) => {
-                if(frameIntervalSelected > 0) {
-                    frameIntervalSelected--;
-                    levelBar.removeChild(levelBar.lastChild);
-                }
-            });
-            plusButton.addEventListener("mouseup", (e) => {
-                if(frameIntervalSelected < 9) {
-                    frameIntervalSelected++;
-                    levelBar.appendChild(Div('', 'selection-level-bar-square'));
-                }
-            });
         case 'sketch-time':
             minusButton.addEventListener("mouseup", (e) => {
                 if(sketchLengthSelected > 0) {
                     sketchLengthSelected--;
                     levelBar.removeChild(levelBar.lastChild);
+                    updateSketchTimePreview();
                 }
             });
             plusButton.addEventListener("mouseup", (e) => {
                 if(sketchLengthSelected < 9) {
                     sketchLengthSelected++;
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
+                    updateSketchTimePreview();
                 }
             });
+            break;
+        case 'frame-interval':
+            minusButton.addEventListener("mouseup", (e) => {
+                if(frameIntervalSelected > 0) {
+                    frameIntervalSelected--;
+                    levelBar.removeChild(levelBar.lastChild);
+                    updateFrameIntervalPreview();
+                }
+            });
+            plusButton.addEventListener("mouseup", (e) => {
+                if(frameIntervalSelected < 9) {
+                    frameIntervalSelected++;
+                    levelBar.appendChild(Div('', 'selection-level-bar-square'));
+                    updateFrameIntervalPreview();
+                }
+            });
+            break;
     }
+}
+
+function updateSketchTimePreview() {
+    if(sketchLengthSelected === 9) {
+        GetElementById('time').innerHTML = 'no limit';
+        return;
+    }
+    GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
+}
+
+function updateFrameIntervalPreview() {
+    GetElementById('frame-interval-preview').textContent = frameIntervalOptionNames[frameIntervalSelected];
 }
 
 function setUpLevelBar(id, levelBar) {

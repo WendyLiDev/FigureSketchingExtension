@@ -49,6 +49,7 @@
     box-shadow: 0px 5px 0px var(--fig-drawing-ext-accent-color);
     width: 100%;
     height: fit-content;
+    position: relative;
 }
 
 #figure-drawing-extension-time-display h1 {
