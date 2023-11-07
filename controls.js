@@ -111,9 +111,6 @@ lhsControls.appendChild(themeButton);
 let img = GetElementById('theme-button-icon');
 img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
 
-themeButton.addEventListener('mousedown', (e) => {
-    e.stopPropagation();
-})
 themeButton.addEventListener('mouseup', (e) => {
     if (e.button !== 0) { return; }
     currentTheme = !currentTheme;
@@ -185,13 +182,6 @@ function createSelectionControl(id, title) {
     select.appendChild(plusButton);
 
     setupLevelBar(id);
-
-    minusButton.addEventListener("mousedown", (e) => {
-        e.stopPropagation();
-    })
-    plusButton.addEventListener("mousedown", (e) => {
-        e.stopPropagation();
-    })
 
     switch(id) {
         case 'sketch-time':
@@ -350,6 +340,9 @@ function Button(id, textContent, className) {
         button.className = "figure-drawing-extension-" + className;
     }
     button.textContent = textContent;
+    button.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+    })
     return button;
 }
 
