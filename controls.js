@@ -3,12 +3,14 @@
 var started = false;
 var paused = false;
 
+const sketchLengthKey = "sketchLength";
 var sketchLengthSelected = 0;
-var sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+const sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
 
+const frameIntervalKey = "frameInterval";
 var frameIntervalSelected = 0;
-var frameIntervalOptions = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
-var frameIntervalOptionNames = [
+const frameIntervalOptions = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
+const frameIntervalOptionNames = [
     "1 second",
     "2 seconds",
     "3 seconds",
@@ -21,11 +23,18 @@ var frameIntervalOptionNames = [
     "3 minutes"
 ];
 
+// A boolean that holds true for light mode and false for dark mode
+const themeKey = "theme";
+var currentTheme = true;
+
 /**
  * ==========================================================
  * ========================= SETUP ==========================
  * ==========================================================
  */
+
+loadPrefs();
+
 chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
     if (response.time) {
         GetElementById('time').innerHTML = getTime(response.time);
@@ -102,28 +111,37 @@ lhsControls.appendChild(themeButton);
 let img = GetElementById('theme-button-icon');
 img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
 
-// TODO: Store this as a preference
-// A boolean that holds true for light mode and false for dark mode
-var currentTheme = true;
+themeButton.addEventListener('mousedown', (e) => {
+    e.stopPropagation();
+})
 themeButton.addEventListener('mouseup', (e) => {
     if (e.button !== 0) { return; }
-    const root = document.querySelector(':root');
-    if (currentTheme) {
-        root.style.setProperty('--fig-drawing-ext-background-color', '#2a2a2a');
-        root.style.setProperty('--fig-drawing-ext-text-color', '#d9d9d9');
-        root.style.setProperty('--fig-drawing-ext-button-hover-color', '#B8B9D5');
-        root.style.setProperty('--fig-drawing-ext-accent-color', '#55566D');
-        img.src = chrome.runtime.getURL("./images/theme_icon-light.png"); 
-        currentTheme = false;
-    } else {
-        root.style.setProperty('--fig-drawing-ext-background-color', '#d9d9d9');
-        root.style.setProperty('--fig-drawing-ext-text-color', '#2a2a2a');
-        root.style.setProperty('--fig-drawing-ext-button-hover-color', '#353c5f');
-        root.style.setProperty('--fig-drawing-ext-accent-color', '#889595');
-        img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
-        currentTheme = true;
-    }
+    currentTheme = !currentTheme;
+    updateDOMTheme();
+    updatePref(themeKey, currentTheme);
 })
+
+function updateDOMTheme() {
+    (currentTheme) ? changeLightTheme() : changeDarkTheme();
+}
+
+function changeLightTheme() {
+    const root = document.querySelector(':root');
+    root.style.setProperty('--fig-drawing-ext-background-color', '#d9d9d9');
+    root.style.setProperty('--fig-drawing-ext-text-color', '#2a2a2a');
+    root.style.setProperty('--fig-drawing-ext-button-hover-color', '#353c5f');
+    root.style.setProperty('--fig-drawing-ext-accent-color', '#889595');
+    img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
+}
+
+function changeDarkTheme() {
+    const root = document.querySelector(':root');
+    root.style.setProperty('--fig-drawing-ext-background-color', '#2a2a2a');
+    root.style.setProperty('--fig-drawing-ext-text-color', '#d9d9d9');
+    root.style.setProperty('--fig-drawing-ext-button-hover-color', '#B8B9D5');
+    root.style.setProperty('--fig-drawing-ext-accent-color', '#55566D');
+    img.src = chrome.runtime.getURL("./images/theme_icon-light.png"); 
+}
 
 /* ====== RHS - Selection controls ====== */
 const rhsControls = Div("rhs-controls");
@@ -161,11 +179,13 @@ function createSelectionControl(id, title) {
     
     const minusButton = Button(id + '-select-minus-button', '-', 'select-button');
     const levelBar = Div(id + '-selection-level-bar', 'selection-level-bar');
-    setUpLevelBar(id, levelBar);
     const plusButton = Button(id + '-select-plus-button', '+', 'select-button');
     select.appendChild(minusButton);
     select.appendChild(levelBar);
     select.appendChild(plusButton);
+
+    setupLevelBar(id);
+
     minusButton.addEventListener("mousedown", (e) => {
         e.stopPropagation();
     })
@@ -180,6 +200,7 @@ function createSelectionControl(id, title) {
                     sketchLengthSelected--;
                     levelBar.removeChild(levelBar.lastChild);
                     updateSketchTimePreview();
+                    updatePref(sketchLengthKey, sketchLengthSelected);
                 }
             });
             plusButton.addEventListener("mouseup", (e) => {
@@ -187,6 +208,7 @@ function createSelectionControl(id, title) {
                     sketchLengthSelected++;
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
                     updateSketchTimePreview();
+                    updatePref(sketchLengthKey, sketchLengthSelected);
                 }
             });
             break;
@@ -196,6 +218,7 @@ function createSelectionControl(id, title) {
                     frameIntervalSelected--;
                     levelBar.removeChild(levelBar.lastChild);
                     updateFrameIntervalPreview();
+                    updatePref(frameIntervalKey, frameIntervalSelected);
                 }
             });
             plusButton.addEventListener("mouseup", (e) => {
@@ -203,6 +226,7 @@ function createSelectionControl(id, title) {
                     frameIntervalSelected++;
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
                     updateFrameIntervalPreview();
+                    updatePref(frameIntervalKey, frameIntervalSelected);
                 }
             });
             break;
@@ -221,10 +245,11 @@ function updateFrameIntervalPreview() {
     GetElementById('frame-interval-preview').textContent = frameIntervalOptionNames[frameIntervalSelected];
 }
 
-function setUpLevelBar(id, levelBar) {
+function setupLevelBar(id) {
+    const levelBar = GetElementById(id + '-selection-level-bar');
     let lvl = ((id === 'frame-interval') ? frameIntervalSelected : sketchLengthSelected) + 1;
-    while (levelBar.hasChildNodes()) {
-        levelBar.removeChild(levelbar.lastChild);
+    while (levelBar.children.length > 0) {
+        levelBar.removeChild(levelBar.lastChild);
     }
     for(let i = 0; i < lvl; ++i) {
         levelBar.appendChild(Div('', 'selection-level-bar-square'));
@@ -375,4 +400,84 @@ function getTime(seconds) {
     }
 
     return '';
+}
+
+function updatePref(key, value) {
+    switch(key) {
+        case sketchLengthKey:
+            chrome.storage.sync.set({ sketchLength: value }, function() {
+                if (chrome.runtime.lastError) {
+                    console.error('Error setting value: ' + chrome.runtime.lastError);
+                }
+            });
+            break;
+        case frameIntervalKey:
+            chrome.storage.sync.set({ frameInterval: value }, function() {
+                if (chrome.runtime.lastError) {
+                    console.error('Error setting value: ' + chrome.runtime.lastError);
+                }
+            });
+            break;
+        case themeKey:
+            chrome.storage.sync.set({ theme: value }, function() {
+                if (chrome.runtime.lastError) {
+                    console.error('Error setting value: ' + chrome.runtime.lastError);
+                }
+            });
+            break;
+    }
+}
+
+function getPref(key) {
+    switch (key) {
+        case sketchLengthKey:
+            return new Promise((resolve, reject) => {
+                chrome.storage.sync.get([sketchLengthKey], function(result) {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(result.sketchLength);
+                    }
+                });
+            }) 
+        case frameIntervalKey:
+            return new Promise((resolve, reject) => {
+                chrome.storage.sync.get([frameIntervalKey], function(result) {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(result.frameInterval);
+                    }
+                });
+            })
+        case themeKey:
+            return new Promise((resolve, reject) => {
+                chrome.storage.sync.get([themeKey], function(result) {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(result.theme);
+                    }
+                });
+            })
+    }
+}
+
+async function loadPrefs() {
+    try {
+      const sketchLengthData = await getPref(sketchLengthKey);
+      sketchLengthSelected = sketchLengthData;
+      setupLevelBar('sketch-time');
+      
+      const frameIntervalData = await getPref(frameIntervalKey);
+      frameIntervalSelected = frameIntervalData;
+      setupLevelBar('frame-interval');
+      updateFrameIntervalPreview();
+
+      const themeData = await getPref(themeKey);
+      currentTheme = themeData;
+      updateDOMTheme();
+    } catch (error) {
+      console.error(error);
+    }
 }
