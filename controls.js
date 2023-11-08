@@ -50,10 +50,9 @@ function updateTimerContent(){
     setTimeout(updateTimerContent, 100);
 }
 
-
 /* **************************************************************************  */
 
-/* === Draggable element === */  
+/* ============ Draggable element ============ */  
 const draggableDiv = Div("controls");
 draggableDiv.style.position = 'fixed';
 draggableDiv.style.top = '20px';
@@ -82,27 +81,29 @@ document.addEventListener('mouseup', () => {
     isDragging = false;
 });
 
-// Append the draggable div to the body
 document.body.appendChild(draggableDiv);
 
-/* ====== LHS - Time display ====== */
+/* ============ LHS - Time display ============ */
 const lhsControls = Div("lhs-controls");
 draggableDiv.appendChild(lhsControls);
 
+// Time display
 const timeDisplay = Div("time-display");
 lhsControls.appendChild(timeDisplay);
-
 const time = H1("time", "00:00:00");
 timeDisplay.appendChild(time);
 
+// Frame interval preview
 const frameIntervalPreview = Div("frame-interval-preview");
 frameIntervalPreview.textContent = frameIntervalOptionNames[frameIntervalSelected];
 lhsControls.appendChild(frameIntervalPreview);
 
+// Progress Bar
 const progressBar = Div('progress-bar');
 progressBar.hidden = true;
 lhsControls.appendChild(progressBar);
 
+// Theme toggle button
 const themeButton = Button("theme-button");
 themeButton.innerHTML = `
     <img id="figure-drawing-extension-theme-button-icon" alt="An icon for a button that changes the theme for the figure drawing extension">
@@ -110,7 +111,6 @@ themeButton.innerHTML = `
 lhsControls.appendChild(themeButton);
 let img = GetElementById('theme-button-icon');
 img.src = chrome.runtime.getURL("./images/theme_icon-dark.png");
-
 themeButton.addEventListener('mouseup', (e) => {
     if (e.button !== 0) { return; }
     currentTheme = !currentTheme;
@@ -140,7 +140,37 @@ function changeDarkTheme() {
     img.src = chrome.runtime.getURL("./images/theme_icon-light.png"); 
 }
 
-/* ====== RHS - Selection controls ====== */
+function updateSketchTimePreview() {
+    if(sketchLengthSelected === 9) {
+        GetElementById('time').innerHTML = 'no limit';
+        return;
+    }
+    GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
+}
+
+function updateFrameIntervalPreview() {
+    GetElementById('frame-interval-preview').textContent = frameIntervalOptionNames[frameIntervalSelected];
+}
+
+function triggerFrameIntervalAnimation() {
+    frameIntervalPreview.className = 'figure-drawing-extension-frame-interval-animation';
+    setTimeout(() => {
+        frameIntervalPreview.className = '';
+    }, 300);
+}
+
+function updateTimerContent(){
+    if(started){
+        chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
+            if (response.time) {
+                GetElementById('time').innerHTML = getTime(response.time);
+            }
+        });
+        setTimeout(updateTimerContent, 100);
+    }
+}
+
+/* ============ RHS - Selection controls ============ */
 const rhsControls = Div("rhs-controls");
 draggableDiv.appendChild(rhsControls);
 
@@ -162,8 +192,6 @@ createControlButton('go-forward', ">>");
 // Main Start & End button
 createMainButton("start", "start");
 
-/* **************************************************************************  */
-/* ***** Create Components *****  */
 function createSelectionControl(id, title) {
     const selectControl = Div("select-control-" + id);
     selectionControls.appendChild(selectControl);
@@ -211,6 +239,7 @@ function createSelectionControl(id, title) {
                     levelBar.removeChild(levelBar.lastChild);
                     updateFrameIntervalPreview();
                     updatePref(frameIntervalKey, frameIntervalSelected);
+                    triggerFrameIntervalAnimation();
                 }
             });
             plusButton.addEventListener("mouseup", (e) => {
@@ -219,22 +248,11 @@ function createSelectionControl(id, title) {
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
                     updateFrameIntervalPreview();
                     updatePref(frameIntervalKey, frameIntervalSelected);
+                    triggerFrameIntervalAnimation();
                 }
             });
             break;
     }
-}
-
-function updateSketchTimePreview() {
-    if(sketchLengthSelected === 9) {
-        GetElementById('time').innerHTML = 'no limit';
-        return;
-    }
-    GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
-}
-
-function updateFrameIntervalPreview() {
-    GetElementById('frame-interval-preview').textContent = frameIntervalOptionNames[frameIntervalSelected];
 }
 
 function setupLevelBar(id) {
@@ -246,6 +264,41 @@ function setupLevelBar(id) {
     for(let i = 0; i < lvl; ++i) {
         levelBar.appendChild(Div('', 'selection-level-bar-square'));
     }
+}
+
+function createControlButton(id, textContent) {
+    const button = Button('control-button-' + id);
+    button.className = "figure-drawing-extension-control-button";
+    button.textContent = textContent;
+    switch (id){
+        case "go-back":
+            button.addEventListener('mouseup', (e) => {
+                if (e.button !== 0) { return; }
+                chrome.runtime.sendMessage({ cmd: 'TRIGGER_BACK' });
+            })
+            break;
+        case "pause":
+            button.addEventListener('mouseup', (e) => {
+                if (e.button !== 0) { return; }
+                chrome.runtime.sendMessage({ cmd: 'TRIGGER_PAUSE_TIMER' });
+                paused = !paused;
+                updatePauseButton();
+            })
+            break;
+        case "go-forward":
+            button.addEventListener('mouseup', (e) => {
+                if (e.button !== 0) { return; }
+                chrome.runtime.sendMessage({ cmd: 'TRIGGER_NEXT' });
+            })
+            break;
+    }
+
+    controlButtons.appendChild(button);
+}
+
+function updatePauseButton(){
+    const pauseButton = GetElementById('control-button-pause');
+    pauseButton.textContent = paused ? '>' : '||';
 }
 
 function createMainButton(id, title) {
@@ -283,55 +336,6 @@ function createMainButton(id, title) {
     });
 
     rhsControls.appendChild(button);
-}
-
-function createControlButton(id, textContent) {
-    const button = Button('control-button-' + id);
-    button.className = "figure-drawing-extension-control-button";
-    button.textContent = textContent;
-    switch (id){
-        case "go-back":
-            button.addEventListener('mouseup', (e) => {
-                if (e.button !== 0) { return; }
-                chrome.runtime.sendMessage({ cmd: 'TRIGGER_BACK' });
-            })
-            break;
-        case "pause":
-            button.addEventListener('mouseup', (e) => {
-                if (e.button !== 0) { return; }
-                chrome.runtime.sendMessage({ cmd: 'TRIGGER_PAUSE_TIMER' });
-                paused = !paused;
-                updatePauseButton();
-            })
-            break;
-        case "go-forward":
-            button.addEventListener('mouseup', (e) => {
-                if (e.button !== 0) { return; }
-                chrome.runtime.sendMessage({ cmd: 'TRIGGER_NEXT' });
-            })
-            break;
-    }
-
-    controlButtons.appendChild(button);
-}
-
-/* **************************************************************************  */
-/* ========== TIMER ========== */
-function updateTimerContent(){
-    if(started){
-        chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
-            if (response.time) {
-                GetElementById('time').innerHTML = getTime(response.time);
-            }
-        });
-        setTimeout(updateTimerContent, 100);
-    }
-}
-
-/* ========== Pause Button ========== */
-function updatePauseButton(){
-    const pauseButton = GetElementById('control-button-pause');
-    pauseButton.textContent = paused ? '>' : '||';
 }
 
 /* **************************************************************************  */
