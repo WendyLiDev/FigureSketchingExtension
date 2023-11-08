@@ -94,7 +94,7 @@ const time = H1("time", "00:00:00");
 timeDisplay.appendChild(time);
 
 // Frame interval preview
-const frameIntervalPreview = Div("frame-interval-preview");
+const frameIntervalPreview = Div("frame-interval-preview", "frame-interval-preview-no-animation");
 frameIntervalPreview.textContent = frameIntervalOptionNames[frameIntervalSelected];
 lhsControls.appendChild(frameIntervalPreview);
 
@@ -155,8 +155,8 @@ function updateFrameIntervalPreview() {
 function triggerFrameIntervalAnimation() {
     frameIntervalPreview.className = 'figure-drawing-extension-frame-interval-animation';
     setTimeout(() => {
-        frameIntervalPreview.className = '';
-    }, 300);
+        frameIntervalPreview.className = 'figure-drawing-extension-frame-interval-preview-no-animation';
+    }, 330);
 }
 
 function updateTimerContent(){
