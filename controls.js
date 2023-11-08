@@ -99,7 +99,6 @@ progressBar.appendChild(progress);
 function updateProgressBarWidth(timeLeft) {
     let remainingRatio = timeLeft / sketchLengthOptions[sketchLengthSelected];
     let calculatedWidth = 360 - (360 * remainingRatio);
-    console.log("updateProgressBar called with width: ", calculatedWidth);
     progress.style.width = `${calculatedWidth}px`;
     progress.style.backgroundColor = (remainingRatio < 0.2) ?
         '#D94C4C' :
