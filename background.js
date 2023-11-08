@@ -14,9 +14,12 @@ const sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
  * ==========================================================
  */
 
-chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
-  countdown = sketchLengthOptions[sketchLength];
-});
+function updateCountdown() {
+  chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
+    countdown = sketchLengthOptions[sketchLength];
+  });
+}
+updateCountdown();
 
 /**
  * ==========================================================
@@ -60,6 +63,7 @@ async function previousFrame() {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.cmd === 'TRIGGER_START_TIMER') {
+    updateCountdown();
     start();
     backgroundTimerStarted = true;
     var countdownTime = setInterval(() => {
@@ -94,6 +98,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   } else if (request.cmd === 'GET_TIME') {
     sendResponse({ time: countdown });
+  } else if (request.cmd === 'UPDATE_TIME') {
+    updateCountdown();
   } else if (request.cmd === 'GET_IF_TIME_STARTED') { 
     sendResponse({ hasTimerStarted: backgroundTimerStarted });
   } else if (request.cmd === 'GET_IF_TIME_PAUSED') { 

@@ -191,6 +191,7 @@ function createSelectionControl(id, title) {
                     levelBar.removeChild(levelBar.lastChild);
                     updateSketchTimePreview();
                     updatePref(sketchLengthKey, sketchLengthSelected);
+                    chrome.runtime.sendMessage({ cmd: 'UPDATE_TIME' });
                 }
             });
             plusButton.addEventListener("mouseup", (e) => {
@@ -199,6 +200,7 @@ function createSelectionControl(id, title) {
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
                     updateSketchTimePreview();
                     updatePref(sketchLengthKey, sketchLengthSelected);
+                    chrome.runtime.sendMessage({ cmd: 'UPDATE_TIME' });
                 }
             });
             break;
@@ -276,6 +278,7 @@ function createMainButton(id, title) {
             progressBar.hidden = true;
             started = false;
             chrome.runtime.sendMessage({ cmd: 'TRIGGER_END_TIMER' });
+            GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
         }
     });
 
