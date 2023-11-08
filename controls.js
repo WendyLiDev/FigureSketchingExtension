@@ -41,15 +41,6 @@ chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
     }
 });
 
-function updateTimerContent(){
-    chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
-        if (response.time) {
-            GetElementById('time').innerHTML = getTime(response.time);
-        }
-    });
-    setTimeout(updateTimerContent, 100);
-}
-
 /* **************************************************************************  */
 
 /* ============ Draggable element ============ */  
@@ -102,6 +93,18 @@ lhsControls.appendChild(frameIntervalPreview);
 const progressBar = Div('progress-bar');
 progressBar.hidden = true;
 lhsControls.appendChild(progressBar);
+const progress = Div('progress');
+progressBar.appendChild(progress);
+
+function updateProgressBarWidth(timeLeft) {
+    let remainingRatio = timeLeft / sketchLengthOptions[sketchLengthSelected];
+    let calculatedWidth = 360 - (360 * remainingRatio);
+    console.log("updateProgressBar called with width: ", calculatedWidth);
+    progress.style.width = `${calculatedWidth}px`;
+    progress.style.backgroundColor = (remainingRatio < 0.2) ?
+        '#D94C4C' :
+        'var(--fig-drawing-ext-text-color)'; 
+}
 
 // Theme toggle button
 const themeButton = Button("theme-button");
@@ -164,6 +167,7 @@ function updateTimerContent(){
         chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
             if (response.time) {
                 GetElementById('time').innerHTML = getTime(response.time);
+                updateProgressBarWidth(response.time);
             }
         });
         setTimeout(updateTimerContent, 100);
