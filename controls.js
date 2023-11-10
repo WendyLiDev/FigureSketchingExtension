@@ -177,6 +177,9 @@ function updateTimerContent(){
 const rhsControls = Div("rhs-controls");
 draggableDiv.appendChild(rhsControls);
 
+// Close button
+const closeButton = Button('close', 'x');
+draggableDiv.appendChild(closeButton);
 
 // Selection controls
 const selectionControls = Div("selection-controls");

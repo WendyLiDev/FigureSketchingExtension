@@ -65,6 +65,23 @@
     text-align: center;;
 }
 
+#figure-drawing-extension-close {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  width: fit-content;
+  height: fit-content;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  font: pixeled;
+  color: var(--fig-drawing-ext-text-color);
+}
+
+#figure-drawing-extension-close:hover {
+  color: var(--fig-drawing-ext-button-hover-color);
+}
+
 #figure-drawing-extension-selection-controls{
     margin-bottom: 10px;
 }
