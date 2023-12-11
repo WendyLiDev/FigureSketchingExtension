@@ -180,6 +180,12 @@ draggableDiv.appendChild(rhsControls);
 // Close button
 const closeButton = Button('close', 'x');
 draggableDiv.appendChild(closeButton);
+closeButton.addEventListener("mouseup", (e) => {
+    draggableDiv.hidden = "true";
+    if (started) {
+        endTimer();
+    }
+});
 
 // Selection controls
 const selectionControls = Div("selection-controls");
@@ -312,36 +318,41 @@ function createMainButton(id, title) {
     button.className = "figure-drawing-extension-main-button";
     button.addEventListener('mouseup', (e) => {
         if (e.button !== 0) { return; }
-        const frameIntervalPreview = GetElementById('frame-interval-preview');
-        const themeButton = GetElementById('theme-button');
-        const progressBar = GetElementById('progress-bar');
-        const selectionControls = GetElementById('selection-controls');
-        const controlButtons = GetElementById('control-buttons');
         if(!started) {
-            button.textContent = "end";
-            frameIntervalPreview.hidden = true;
-            themeButton.hidden = true;
-            selectionControls.style.display = "none";
-            controlButtons.style.display = "block";
-            progressBar.hidden = false;
-            started = true;
-            chrome.runtime.sendMessage({ cmd: 'TRIGGER_START_TIMER',
-                when: sketchLengthOptions[sketchLengthSelected] });
-            updateTimerContent();
+            startTimer();
         } else {
-            button.textContent = "start";
-            frameIntervalPreview.hidden = false;
-            themeButton.hidden = false;
-            selectionControls.style.display = "block";
-            controlButtons.style.display = "none";
-            progressBar.hidden = true;
-            started = false;
-            chrome.runtime.sendMessage({ cmd: 'TRIGGER_END_TIMER' });
-            GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
+            endTimer();
         }
     });
 
     rhsControls.appendChild(button);
+}
+
+const button = GetElementById('main-button-start');
+
+function startTimer() {
+    button.textContent = "end";
+    frameIntervalPreview.hidden = true;
+    themeButton.hidden = true;
+    selectionControls.style.display = "none";
+    controlButtons.style.display = "block";
+    progressBar.hidden = false;
+    started = true;
+    chrome.runtime.sendMessage({ cmd: 'TRIGGER_START_TIMER',
+        when: sketchLengthOptions[sketchLengthSelected] });
+    updateTimerContent();
+}
+
+function endTimer() {
+    button.textContent = "start";
+    frameIntervalPreview.hidden = false;
+    themeButton.hidden = false;
+    selectionControls.style.display = "block";
+    controlButtons.style.display = "none";
+    progressBar.hidden = true;
+    started = false;
+    chrome.runtime.sendMessage({ cmd: 'TRIGGER_END_TIMER' });
+    GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
 }
 
 /* **************************************************************************  */

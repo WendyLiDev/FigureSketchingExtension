@@ -61,6 +61,15 @@ async function previousFrame() {
   });
 }
 
+async function showUI() {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ['scripts/showUIScript.js'],
+  });
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.cmd === 'TRIGGER_START_TIMER') {
     updateCountdown();
@@ -104,7 +113,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ hasTimerStarted: backgroundTimerStarted });
   } else if (request.cmd === 'GET_IF_TIME_PAUSED') { 
     sendResponse({ hasTimerPaused: backgroundTimerPaused });
-  } 
+  } else if (request.cmd === 'TRIGGER_SHOW_UI') {
+    showUI();
+  }
 });
 
 /** TODO:
