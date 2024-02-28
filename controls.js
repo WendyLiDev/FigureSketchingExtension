@@ -48,6 +48,7 @@ const draggableDiv = Div("controls");
 draggableDiv.style.position = 'fixed';
 draggableDiv.style.top = '20px';
 draggableDiv.style.right = '20px';
+draggableDiv.style.opacity = "0";
 
 // Add mousedown event listener to enable dragging
 let isDragging = false;
