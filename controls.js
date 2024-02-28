@@ -208,7 +208,8 @@ function createSelectionControl(id, title) {
     const selectControl = Div("select-control-" + id);
     selectionControls.appendChild(selectControl);
 
-    const selectTitle = H1("select-title", title);
+    const selectTitle = H1("select-title-" + id, title);
+    selectTitle.classList.add("figure-drawing-extension-select-title");
     const select = document.createElement('span');
     select.className = "figure-drawing-extension-select";
     selectControl.appendChild(selectTitle);
