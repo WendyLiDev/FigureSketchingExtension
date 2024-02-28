@@ -181,7 +181,7 @@ draggableDiv.appendChild(rhsControls);
 const closeButton = Button('close', 'x');
 draggableDiv.appendChild(closeButton);
 closeButton.addEventListener("mouseup", (e) => {
-    draggableDiv.hidden = "true";
+    draggableDiv.style.opacity = "0";
     if (started) {
         endTimer();
     }

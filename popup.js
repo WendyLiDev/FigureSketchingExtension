@@ -198,9 +198,7 @@ function handleMinimizeButtonClick() {
 
 minimizeButton.addEventListener("click", handleMinimizeButtonClick);
 
-const openButton = document.getElementById("openUIButton");
-openButton.addEventListener("mouseup", handleOpenButtonClick);
-
-function handleOpenButtonClick(event) {
+const openUIButton = document.getElementById("openUIButton");
+openUIButton.addEventListener("mouseup", (e) => {
     chrome.runtime.sendMessage({ cmd: 'TRIGGER_SHOW_UI' });
-}
+});

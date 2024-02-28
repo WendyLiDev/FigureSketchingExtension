@@ -1,3 +1,2 @@
 // showUIScript.js
-
-draggableDiv.removeAttribute('hidden');
+draggableDiv.style.opacity = "100";
