@@ -27,7 +27,6 @@ select {
 
 select:hover {
     background-color: rgba(188, 184, 177, 1);
-
 }
 
 .selectRow {
@@ -42,7 +41,7 @@ select:hover {
     color: #463f3a;
     font-size: x-small;
     font-weight: bold;
-    width: 20%
+    width: 20%;
 }
 
 :root {
