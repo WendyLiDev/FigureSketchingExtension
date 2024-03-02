@@ -123,6 +123,26 @@ themeButton.addEventListener('mouseup', (e) => {
 
 function updateDOMTheme() {
     (currentTheme) ? changeLightTheme() : changeDarkTheme();
+
+    // Update pause, play, forward, and back button images
+    const currTheme = currentTheme ? "light" : "dark";
+    const backButton = GetElementById('control-button-go-back');
+    var backButtonImg = document.createElement("img");
+    backButtonImg.src =  chrome.runtime.getURL(`./images/button_icons_back_${currTheme}.png`);
+    backButton.removeChild(backButton.firstChild);
+    backButton.appendChild(backButtonImg);
+
+    const nextButton = GetElementById('control-button-go-forward');
+    var nextButtonImg = document.createElement("img");
+    nextButtonImg.src =  chrome.runtime.getURL(`./images/button_icons_next_${currTheme}.png`);
+    nextButton.removeChild(nextButton.firstChild);
+    nextButton.appendChild(nextButtonImg);
+    
+    const pauseButton = GetElementById('control-button-pause');
+    var pauseButtonImg = document.createElement("img");
+    pauseButtonImg.src =  chrome.runtime.getURL(`./images/button_icons_pause_${currTheme}.png`);
+    pauseButton.removeChild(pauseButton.firstChild);
+    pauseButton.appendChild(pauseButtonImg);
 }
 
 function changeLightTheme() {
@@ -283,17 +303,18 @@ function setupLevelBar(id) {
 function createControlButton(id, textContent) {
     const button = Button('control-button-' + id);
     button.className = "figure-drawing-extension-control-button";
+    const currTheme = currentTheme ? "light" : "dark";
     var img = document.createElement("img");
     switch (id){
         case "go-back":
-            img.src = chrome.runtime.getURL("./images/button_icons_back_light.png");
+            img.src = chrome.runtime.getURL(`./images/button_icons_back_${currTheme}.png`);
             button.addEventListener('mouseup', (e) => {
                 if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_BACK' });
             })
             break;
         case "pause":
-            img.src = chrome.runtime.getURL("./images/button_icons_pause_light.png");
+            img.src = chrome.runtime.getURL(`./images/button_icons_pause_${currTheme}.png`);
             button.addEventListener('mouseup', (e) => {
                 if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_PAUSE_TIMER' });
@@ -302,7 +323,7 @@ function createControlButton(id, textContent) {
             })
             break;
         case "go-forward":
-            img.src = chrome.runtime.getURL("./images/button_icons_next_light.png");
+            img.src = chrome.runtime.getURL(`./images/button_icons_next_${currTheme}.png`);
             button.addEventListener('mouseup', (e) => {
                 if (e.button !== 0) { return; }
                 chrome.runtime.sendMessage({ cmd: 'TRIGGER_NEXT' });
@@ -316,9 +337,10 @@ function createControlButton(id, textContent) {
 
 function updatePauseButton(){
     const pauseButton = GetElementById('control-button-pause');
+    const currTheme = currentTheme ? "light" : "dark";
     var img = document.createElement("img");
-    img.src = paused ? chrome.runtime.getURL("./images/button_icons_play_light.png") :
-                       chrome.runtime.getURL("./images/button_icons_pause_light.png");
+    img.src = paused ? chrome.runtime.getURL(`./images/button_icons_play_${currTheme}.png`) :
+                       chrome.runtime.getURL(`./images/button_icons_pause_${currTheme}.png`);
     pauseButton.removeChild(pauseButton.firstChild);
     pauseButton.appendChild(img);
 }
