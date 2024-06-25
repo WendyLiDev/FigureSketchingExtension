@@ -59,7 +59,7 @@ draggableDiv.addEventListener('mousedown', (e) => {
     offsetX = e.clientX - draggableDiv.getBoundingClientRect().left;
     offsetY = e.clientY - draggableDiv.getBoundingClientRect().top;
     // Don't propogate the event to the document
-    if (e.stopPropagation) {
+    if (!!e.stopPropagation) {
         e.stopPropagation();   // W3C model
     } else {
         e.cancelBubble = true; // IE model
@@ -73,7 +73,7 @@ document.addEventListener('mousemove', (e) => {
         draggableDiv.style.top = e.clientY - offsetY + 'px';
     }
     // Don't propogate the event to the document
-    if (e.stopPropagation) {
+    if (!!e.stopPropagation) {
         e.stopPropagation();   // W3C model
     } else {
         e.cancelBubble = true; // IE model
