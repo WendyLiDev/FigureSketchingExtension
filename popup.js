@@ -204,6 +204,7 @@ minimizeButton.addEventListener("click", handleMinimizeButtonClick);
 const openUIButton = document.getElementById("openUIButton");
 openUIButton.addEventListener("mouseup", (e) => {
     chrome.runtime.sendMessage({ cmd: 'TRIGGER_SHOW_UI' });
+    window.close();
 });
 
 /**
