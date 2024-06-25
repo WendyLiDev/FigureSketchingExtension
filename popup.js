@@ -180,9 +180,8 @@ function enableStartingControls() {
  * */
 let minimized = false;
 const minimizeButton = document.getElementById("minimizeButton");
-
+const ui = document.getElementById("UI");
 function handleMinimizeButtonClick() {
-    const ui = document.getElementById("UI");
     if(!minimized){
         ui.hidden = true;
         header.hidden = true;
@@ -198,7 +197,21 @@ function handleMinimizeButtonClick() {
 
 minimizeButton.addEventListener("click", handleMinimizeButtonClick);
 
+/**
+ * ========== OPEN UI BUTTON ==========
+ */
+
 const openUIButton = document.getElementById("openUIButton");
 openUIButton.addEventListener("mouseup", (e) => {
     chrome.runtime.sendMessage({ cmd: 'TRIGGER_SHOW_UI' });
 });
+
+/**
+ * Temporarily remove UI in popup
+ * TODO: Clean up this section
+ */
+const timer = document.getElementById("timer");
+timer.hidden = true;
+header.hidden = true;
+ui.hidden = true;
+minimizeButton.hidden = true;

@@ -1,4 +1,4 @@
-// helpers.js
+// scripts/helpers.js
 
 /**
  * ========== TIMER ==========

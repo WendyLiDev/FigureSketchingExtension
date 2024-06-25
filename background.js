@@ -6,7 +6,7 @@ let backgroundTimerStarted = false;
 let backgroundTimerPaused = false;
 let triggerEndBackgroundTimer = false;
 
-const sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+const SKETCH_LENGTH_OPTIONS = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
 
 /**
  * ==========================================================
@@ -16,7 +16,7 @@ const sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
 
 function updateCountdown() {
   chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
-    countdown = sketchLengthOptions[sketchLength];
+    countdown = SKETCH_LENGTH_OPTIONS[sketchLength];
   });
 }
 updateCountdown();
@@ -30,7 +30,7 @@ updateCountdown();
 
 function resetTimer() {
   chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
-    countdown = sketchLengthOptions[sketchLength];
+    countdown = SKETCH_LENGTH_OPTIONS[sketchLength];
   });
 }
 

@@ -3,14 +3,17 @@
 var started = false;
 var paused = false;
 
-const SKETCH_LENGTH_KEY = "sketchLength";
+/** ================ STORED USER PREFERENCES ================ */
+// {number} The index of user's preference for how many seconds for each sketch
 var sketchLengthSelected = 0;
-const sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+const SKETCH_LENGTH_KEY = "sketchLength";
+const SKETCH_LENGTH_OPTIONS = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
 
-const FRAME_INTERVAL_KEY = "frameInterval";
+// {number} The index of user's preference for how many seconds to skip over between sketches
 var frameIntervalSelected = 0;
-const frameIntervalOptions = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
-const frameIntervalOptionNames = [
+const FRAME_INTERVAL_KEY = "frameInterval";
+const FRAME_INTERVAL_OPTIONS = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
+const FRAME_INTERVAL_OPTION_NAMES = [
     "1 second",
     "2 seconds",
     "3 seconds",
@@ -23,15 +26,11 @@ const frameIntervalOptionNames = [
     "3 minutes"
 ];
 
-// A boolean that holds true for light mode and false for dark mode
-const THEME_KEY = "theme";
+// {boolean} The current theme which is true for light mode and false for dark mode
 var currentTheme = true;
+const THEME_KEY = "theme";
 
-/**
- * ==========================================================
- * ========================= SETUP ==========================
- * ==========================================================
- */
+/** ========================= SETUP =========================== */
 
 loadPrefs();
 
@@ -41,7 +40,7 @@ chrome.runtime.sendMessage({ cmd: 'GET_TIME' }, response => {
     }
 });
 
-/* **************************************************************************  */
+/** ================ RENDER ELEMENTS TO DOM =================== */
 
 /* ============ Draggable element ============ */  
 const draggableDiv = Div("controls");
@@ -59,6 +58,12 @@ draggableDiv.addEventListener('mousedown', (e) => {
     isDragging = true;
     offsetX = e.clientX - draggableDiv.getBoundingClientRect().left;
     offsetY = e.clientY - draggableDiv.getBoundingClientRect().top;
+    // Don't propogate the event to the document
+    if (e.stopPropagation) {
+        e.stopPropagation();   // W3C model
+    } else {
+        e.cancelBubble = true; // IE model
+    }
 });
 
 // Handle the dragging functionality
@@ -66,6 +71,12 @@ document.addEventListener('mousemove', (e) => {
     if (isDragging) {
         draggableDiv.style.left = e.clientX - offsetX + 'px';
         draggableDiv.style.top = e.clientY - offsetY + 'px';
+    }
+    // Don't propogate the event to the document
+    if (e.stopPropagation) {
+        e.stopPropagation();   // W3C model
+    } else {
+        e.cancelBubble = true; // IE model
     }
 });
 
@@ -87,7 +98,7 @@ timeDisplay.appendChild(time);
 
 // Frame interval preview
 const frameIntervalPreview = Div("frame-interval-preview", "frame-interval-preview-no-animation");
-frameIntervalPreview.textContent = frameIntervalOptionNames[frameIntervalSelected];
+frameIntervalPreview.textContent = FRAME_INTERVAL_OPTION_NAMES[frameIntervalSelected];
 lhsControls.appendChild(frameIntervalPreview);
 
 // Progress Bar
@@ -98,7 +109,7 @@ const progress = Div('progress');
 progressBar.appendChild(progress);
 
 function updateProgressBarWidth(timeLeft) {
-    let remainingRatio = timeLeft / sketchLengthOptions[sketchLengthSelected];
+    let remainingRatio = timeLeft / SKETCH_LENGTH_OPTIONS[sketchLengthSelected];
     let calculatedWidth = 360 - (360 * remainingRatio);
     progress.style.width = `${calculatedWidth}px`;
     progress.style.backgroundColor = (remainingRatio < 0.2) ?
@@ -168,11 +179,11 @@ function updateSketchTimePreview() {
         GetElementById('time').innerHTML = 'no limit';
         return;
     }
-    GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
+    GetElementById('time').innerHTML = getTime(SKETCH_LENGTH_OPTIONS[sketchLengthSelected]);
 }
 
 function updateFrameIntervalPreview() {
-    GetElementById('frame-interval-preview').textContent = frameIntervalOptionNames[frameIntervalSelected];
+    GetElementById('frame-interval-preview').textContent = FRAME_INTERVAL_OPTION_NAMES[frameIntervalSelected];
 }
 
 function triggerFrameIntervalAnimation() {
@@ -370,8 +381,7 @@ function startTimer() {
     controlButtons.style.display = "block";
     progressBar.hidden = false;
     started = true;
-    chrome.runtime.sendMessage({ cmd: 'TRIGGER_START_TIMER',
-        when: sketchLengthOptions[sketchLengthSelected] });
+    chrome.runtime.sendMessage({ cmd: 'TRIGGER_START_TIMER' });
     updateTimerContent();
 }
 
@@ -384,7 +394,7 @@ function endTimer() {
     progressBar.hidden = true;
     started = false;
     chrome.runtime.sendMessage({ cmd: 'TRIGGER_END_TIMER' });
-    GetElementById('time').innerHTML = getTime(sketchLengthOptions[sketchLengthSelected]);
+    GetElementById('time').innerHTML = getTime(SKETCH_LENGTH_OPTIONS[sketchLengthSelected]);
 }
 
 /* **************************************************************************  */
