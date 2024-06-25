@@ -3,11 +3,11 @@
 var started = false;
 var paused = false;
 
-const sketchLengthKey = "sketchLength";
+const SKETCH_LENGTH_KEY = "sketchLength";
 var sketchLengthSelected = 0;
 const sketchLengthOptions = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
 
-const frameIntervalKey = "frameInterval";
+const FRAME_INTERVAL_KEY = "frameInterval";
 var frameIntervalSelected = 0;
 const frameIntervalOptions = [1, 2, 3, 5, 10, 15, 30, 60, 120, 180];
 const frameIntervalOptionNames = [
@@ -24,7 +24,7 @@ const frameIntervalOptionNames = [
 ];
 
 // A boolean that holds true for light mode and false for dark mode
-const themeKey = "theme";
+const THEME_KEY = "theme";
 var currentTheme = true;
 
 /**
@@ -118,7 +118,7 @@ themeButton.addEventListener('mouseup', (e) => {
     if (e.button !== 0) { return; }
     currentTheme = !currentTheme;
     updateDOMTheme();
-    updatePref(themeKey, currentTheme);
+    updatePref(THEME_KEY, currentTheme);
 })
 
 function updateDOMTheme() {
@@ -252,7 +252,7 @@ function createSelectionControl(id, title) {
                     sketchLengthSelected--;
                     levelBar.removeChild(levelBar.lastChild);
                     updateSketchTimePreview();
-                    updatePref(sketchLengthKey, sketchLengthSelected);
+                    updatePref(SKETCH_LENGTH_KEY, sketchLengthSelected);
                     chrome.runtime.sendMessage({ cmd: 'UPDATE_TIME' });
                 }
             });
@@ -261,7 +261,7 @@ function createSelectionControl(id, title) {
                     sketchLengthSelected++;
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
                     updateSketchTimePreview();
-                    updatePref(sketchLengthKey, sketchLengthSelected);
+                    updatePref(SKETCH_LENGTH_KEY, sketchLengthSelected);
                     chrome.runtime.sendMessage({ cmd: 'UPDATE_TIME' });
                 }
             });
@@ -272,7 +272,7 @@ function createSelectionControl(id, title) {
                     frameIntervalSelected--;
                     levelBar.removeChild(levelBar.lastChild);
                     updateFrameIntervalPreview();
-                    updatePref(frameIntervalKey, frameIntervalSelected);
+                    updatePref(FRAME_INTERVAL_KEY, frameIntervalSelected);
                     triggerFrameIntervalAnimation();
                 }
             });
@@ -281,7 +281,7 @@ function createSelectionControl(id, title) {
                     frameIntervalSelected++;
                     levelBar.appendChild(Div('', 'selection-level-bar-square'));
                     updateFrameIntervalPreview();
-                    updatePref(frameIntervalKey, frameIntervalSelected);
+                    updatePref(FRAME_INTERVAL_KEY, frameIntervalSelected);
                     triggerFrameIntervalAnimation();
                 }
             });
@@ -466,21 +466,21 @@ function getTime(seconds) {
 
 function updatePref(key, value) {
     switch(key) {
-        case sketchLengthKey:
+        case SKETCH_LENGTH_KEY:
             chrome.storage.sync.set({ sketchLength: value }, function() {
                 if (chrome.runtime.lastError) {
                     console.error('Error setting value: ' + chrome.runtime.lastError);
                 }
             });
             break;
-        case frameIntervalKey:
+        case FRAME_INTERVAL_KEY:
             chrome.storage.sync.set({ frameInterval: value }, function() {
                 if (chrome.runtime.lastError) {
                     console.error('Error setting value: ' + chrome.runtime.lastError);
                 }
             });
             break;
-        case themeKey:
+        case THEME_KEY:
             chrome.storage.sync.set({ theme: value }, function() {
                 if (chrome.runtime.lastError) {
                     console.error('Error setting value: ' + chrome.runtime.lastError);
@@ -492,9 +492,9 @@ function updatePref(key, value) {
 
 function getPref(key) {
     switch (key) {
-        case sketchLengthKey:
+        case SKETCH_LENGTH_KEY:
             return new Promise((resolve, reject) => {
-                chrome.storage.sync.get([sketchLengthKey], function(result) {
+                chrome.storage.sync.get([SKETCH_LENGTH_KEY], function(result) {
                     if (chrome.runtime.lastError) {
                         reject(chrome.runtime.lastError);
                     } else {
@@ -502,9 +502,9 @@ function getPref(key) {
                     }
                 });
             }) 
-        case frameIntervalKey:
+        case FRAME_INTERVAL_KEY:
             return new Promise((resolve, reject) => {
-                chrome.storage.sync.get([frameIntervalKey], function(result) {
+                chrome.storage.sync.get([FRAME_INTERVAL_KEY], function(result) {
                     if (chrome.runtime.lastError) {
                         reject(chrome.runtime.lastError);
                     } else {
@@ -512,9 +512,9 @@ function getPref(key) {
                     }
                 });
             })
-        case themeKey:
+        case THEME_KEY:
             return new Promise((resolve, reject) => {
-                chrome.storage.sync.get([themeKey], function(result) {
+                chrome.storage.sync.get([THEME_KEY], function(result) {
                     if (chrome.runtime.lastError) {
                         reject(chrome.runtime.lastError);
                     } else {
@@ -527,16 +527,16 @@ function getPref(key) {
 
 async function loadPrefs() {
     try {
-      const sketchLengthData = await getPref(sketchLengthKey);
+      const sketchLengthData = await getPref(SKETCH_LENGTH_KEY);
       sketchLengthSelected = sketchLengthData;
       setupLevelBar('sketch-time');
       
-      const frameIntervalData = await getPref(frameIntervalKey);
+      const frameIntervalData = await getPref(FRAME_INTERVAL_KEY);
       frameIntervalSelected = frameIntervalData;
       setupLevelBar('frame-interval');
       updateFrameIntervalPreview();
 
-      const themeData = await getPref(themeKey);
+      const themeData = await getPref(THEME_KEY);
       currentTheme = themeData;
       updateDOMTheme();
     } catch (error) {
