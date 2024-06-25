@@ -4,10 +4,13 @@ var started = false;
 var paused = false;
 
 /** ================ STORED USER PREFERENCES ================ */
+
 // {number} The index of user's preference for how many seconds for each sketch
 var sketchLengthSelected = 0;
 const SKETCH_LENGTH_KEY = "sketchLength";
-const SKETCH_LENGTH_OPTIONS = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+// TODO: Move constants to a shared constants file
+// changes to this need to be updated in background.js
+const SKETCH_LENGTH_OPTIONS = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, -1];
 
 // {number} The index of user's preference for how many seconds to skip over between sketches
 var frameIntervalSelected = 0;
@@ -460,8 +463,8 @@ function getTimerString (seconds, minutes, hours){
 function getTime(seconds) {
     if(GetElementById("time")){
         // when sketchLengthSelected is 9, the timer is set to infinite time 
-        if(sketchLengthSelected === 9){
-            return '';
+        if(SKETCH_LENGTH_OPTIONS[sketchLengthSelected] === -1){
+            return 'no limit';
         }
 
         const sec = Number(seconds) % 60;

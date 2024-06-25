@@ -6,13 +6,11 @@ let backgroundTimerStarted = false;
 let backgroundTimerPaused = false;
 let triggerEndBackgroundTimer = false;
 
-const SKETCH_LENGTH_OPTIONS = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, 0];
+// TODO: Move constants to a shared constants file
+// changes to this need to be updated in controls.js
+const SKETCH_LENGTH_OPTIONS = [30, 60, 120, 180, 300, 600, 1800, 3600, 7200, -1];
 
-/**
- * ==========================================================
- * ========================= SETUP ==========================
- * ==========================================================
- */
+/** ========================= SETUP =========================== */
 
 function updateCountdown() {
   chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
@@ -21,13 +19,72 @@ function updateCountdown() {
 }
 updateCountdown();
 
-/**
- * ==========================================================
- * ======================= END SETUP ========================
- * ==========================================================
- */
+/** ============== LISTEN IN BACKGROUND FOR CALLS ============== */
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  switch(request.cmd) {
+    case 'TRIGGER_START_TIMER':
+      updateCountdown();
+      start();
+      backgroundTimerStarted = true;
+      var countdownTime = setInterval(() => {
+        if (triggerEndBackgroundTimer){
+          clearInterval(countdownTime);
+          resetTimer();
+          triggerEndBackgroundTimer = false;
+          backgroundTimerStarted = false;
+        }
+        else if(countdown === -1) {
+          // No time limit - do nothing
+        }
+        else if (!backgroundTimerPaused && countdown > 0){
+          countdown = countdown - 1;
+        }
+        else if (countdown === 0) {
+          resetTimer();
+          nextFrame();
+        }
+      }, 1000);
+      break;
+    case 'TRIGGER_BACK':
+      resetTimer();
+      previousFrame();
+      break;
+    case 'TRIGGER_NEXT':
+      resetTimer();
+      nextFrame();
+      break;
+    case 'TRIGGER_PAUSE_TIMER':
+      backgroundTimerPaused = !backgroundTimerPaused;
+      break;
+    case 'TRIGGER_END_TIMER':
+      triggerEndBackgroundTimer = true;
+      backgroundTimerPaused = false;
+      break;
+    case 'TRIGGER_SKETCH_LENGTH_CHANGED':
+      chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
+        countdown = sketchLength;
+      });
+      break;
+    case 'GET_TIME':
+      sendResponse({ time: countdown });
+      break;
+    case 'UPDATE_TIME':
+      updateCountdown();
+      break;
+    case 'GET_IF_TIME_STARTED': 
+      sendResponse({ hasTimerStarted: backgroundTimerStarted });
+      break;
+    case 'GET_IF_TIME_PAUSED': 
+      sendResponse({ hasTimerPaused: backgroundTimerPaused });
+      break;
+    case 'TRIGGER_SHOW_UI':
+      showUI();
+      break; 
+  }
+});
 
+/** ======================== HELPERS ========================== */
 function resetTimer() {
   chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
     countdown = SKETCH_LENGTH_OPTIONS[sketchLength];
@@ -69,54 +126,6 @@ async function showUI() {
     files: ['scripts/showUIScript.js'],
   });
 }
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.cmd === 'TRIGGER_START_TIMER') {
-    updateCountdown();
-    start();
-    backgroundTimerStarted = true;
-    var countdownTime = setInterval(() => {
-      if (triggerEndBackgroundTimer){
-        clearInterval(countdownTime);
-        resetTimer();
-        triggerEndBackgroundTimer = false;
-        backgroundTimerStarted = false;
-      }
-      else if (!backgroundTimerPaused && countdown > 0){
-        countdown = countdown - 1;
-      }
-      else if (countdown === 0) {
-        resetTimer();
-        nextFrame();
-      }
-    }, 1000)
-  } else if (request.cmd === 'TRIGGER_BACK')  {
-    resetTimer();
-    previousFrame();
-  } else if (request.cmd === 'TRIGGER_NEXT') {
-    resetTimer();
-    nextFrame();
-  } else if (request.cmd === 'TRIGGER_PAUSE_TIMER') {
-    backgroundTimerPaused = !backgroundTimerPaused;
-  } else if (request.cmd === 'TRIGGER_END_TIMER') {
-    triggerEndBackgroundTimer = true;
-    backgroundTimerPaused = false;
-  } else if (request.cmd === 'TRIGGER_SKETCH_LENGTH_CHANGED') {
-    chrome.storage.sync.get("sketchLength", ({ sketchLength }) => {
-      countdown = sketchLength;
-    });
-  } else if (request.cmd === 'GET_TIME') {
-    sendResponse({ time: countdown });
-  } else if (request.cmd === 'UPDATE_TIME') {
-    updateCountdown();
-  } else if (request.cmd === 'GET_IF_TIME_STARTED') { 
-    sendResponse({ hasTimerStarted: backgroundTimerStarted });
-  } else if (request.cmd === 'GET_IF_TIME_PAUSED') { 
-    sendResponse({ hasTimerPaused: backgroundTimerPaused });
-  } else if (request.cmd === 'TRIGGER_SHOW_UI') {
-    showUI();
-  }
-});
 
 /** TODO:
  * Add sleep and wake calls to prevent background script from being run constantly
