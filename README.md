@@ -4,10 +4,11 @@
 
 Figure sketching involves capturing the human form focusing on proportions, anatomy, and the fluidity of poses. The best way to start is with numerous quick sketches to build an understanding of the subject's movement and essence. This approach helps artists develop their observational skills and hand-eye coordination, allowing them to depict the human figure more naturally and dynamically. Quick sketches encourage experimentation and reduce the pressure to create perfect drawings, fostering a more intuitive and spontaneous artistic process. By practicing this way, artists can achieve greater confidence and proficiency in their figure sketching abilities.
 
-This is a basic extension that finds the video on the page, pauses the frame for a set amount of time, and then skips over to another frame in the video. It's best to start off with a lower duration for the sketch time then working up towards lengthier and more detailed sketches. However, feel free to use the tool however you like and what suits your needs best!
+This is a basic Chrome extension that finds the video on the page, pauses the frame for a set amount of time, and then skips over to another frame in the video. It's best to start off with a lower duration for the sketch time then working up towards lengthier and more detailed sketches. However, feel free to use the tool however you like and what suits your needs best!
 
 ![An example of figure sketches pulled from a video compared to the resulting sketch](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/figure_sketch_references.png?raw=true)
 
+Here is the results from a dance video where I gave myself 60 seconds per sketch and each frame was 2 seconds apart. Even from this quick 10 minute exercise, you can already see the difference between the sketches from the beginning versus the end where the brush strokes move with much more fluidity, bringing out the motion of the pose.
 
 ## UI Design - [Figma](https://www.figma.com/proto/c8DJ7aHhBRdEGXLvcpFCch/Figure-Sketch-Helper?t=zJ0Wh597nUNkXJ4s-1)
 Opting for a simple greyscale interface that doesn't distract from the content on the page. 
