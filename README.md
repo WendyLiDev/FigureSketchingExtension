@@ -6,19 +6,19 @@ Figure sketching involves capturing the human form focusing on proportions, anat
 
 This is a basic extension that finds the video on the page, pauses the frame for a set amount of time, and then skips over to another frame in the video. It's best to start off with a lower duration for the sketch time then working up towards lengthier and more detailed sketches. However, feel free to use the tool however you like and what suits your needs best!
 
-![An example of figure sketches pulled from a video compared to the resulting sketch](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/figure_sketch_references.png?raw=true))
+![An example of figure sketches pulled from a video compared to the resulting sketch](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/figure_sketch_references.png?raw=true)
 
 
 ## UI Design - [Figma](https://www.figma.com/proto/c8DJ7aHhBRdEGXLvcpFCch/Figure-Sketch-Helper?t=zJ0Wh597nUNkXJ4s-1)
 Opting for a simple greyscale interface that doesn't distract from the content on the page. 
 
-![The user interface design of the controls for the figure sketching timer tool.](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/figma.png?raw=true))
+![The user interface design of the controls for the figure sketching timer tool.](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/figma.png?raw=true)
 
 
 
 Timer almost out of time             |  Skipped to the next frame
 :-------------------------:|:-------------------------:
-![The timer is counting down on a paused frame of the video](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/README_timer_1.png?raw=true)  |  ![The timer counted down and upon reaching 0, has skipped over 2 seconds to show the next frame of the video and reset the timer](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/README_timer_2.png?raw=true))
+![The timer is counting down on a paused frame of the video](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/README_timer_1.png?raw=true)  |  ![The timer counted down and upon reaching 0, has skipped over 2 seconds to show the next frame of the video and reset the timer](https://github.com/WendyLiDev/FigureSketchingExtension/blob/main/images/README_timer_2.png?raw=true)
 
 ## Technical Challenges
 This is a basic Chrome extension written with vanilla JavaScript, HTML, and CSS that finds the video on the page, pauses the frame for a set amount of time, and then skips over to another frame in the video.
