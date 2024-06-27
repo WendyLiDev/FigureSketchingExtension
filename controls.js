@@ -364,6 +364,8 @@ function createMainButton(id, title) {
     button.className = "figure-drawing-extension-main-button";
     button.addEventListener('mouseup', (e) => {
         if (e.button !== 0) { return; }
+        paused = false;
+        updatePauseButton();
         if(!started) {
             startTimer();
         } else {
