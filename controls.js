@@ -96,7 +96,7 @@ draggableDiv.appendChild(lhsControls);
 // Time display
 const timeDisplay = Div("time-display");
 lhsControls.appendChild(timeDisplay);
-const time = H1("time", "00:00:00");
+const time = H1("time", "30:00");
 timeDisplay.appendChild(time);
 
 // Frame interval preview
@@ -543,11 +543,19 @@ function getPref(key) {
 async function loadPrefs() {
     try {
       const sketchLengthData = await getPref(SKETCH_LENGTH_KEY);
-      sketchLengthSelected = sketchLengthData;
+      if(!sketchLengthData) {
+        sketchLengthSelected = 0; // Set default sketch length if it doesnt exist
+      } else {
+        sketchLengthSelected = sketchLengthData;
+      }
       setupLevelBar('sketch-time');
       
       const frameIntervalData = await getPref(FRAME_INTERVAL_KEY);
-      frameIntervalSelected = frameIntervalData;
+      if(!frameIntervalData) {
+        frameIntervalSelected = 0; // Set default frame interval if it doesnt exist
+      } else {
+        frameIntervalSelected = frameIntervalData;
+      }
       setupLevelBar('frame-interval');
       updateFrameIntervalPreview();
 

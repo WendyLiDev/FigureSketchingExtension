@@ -1,7 +1,7 @@
 // background.js
 
 let timerID;
-let countdown;
+let countdown = 0;
 let backgroundTimerStarted = false;
 let backgroundTimerPaused = false;
 let triggerEndBackgroundTimer = false;
